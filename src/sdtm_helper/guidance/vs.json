@@ -1,0 +1,26 @@
+{
+  "domain": "VS",
+  "summary": "One record per vital sign measurement per time point per visit per subject. Transpose wide CRF data (one column per test) into one row per test.",
+  "variables": {
+    "VSTESTCD": {
+      "step": "tests",
+      "tip": "From the VSTESTCD codelist, e.g. \"SYSBP\", \"DIABP\", \"PULSE\", \"RESP\", \"TEMP\", \"WEIGHT\", \"HEIGHT\", \"BMI\"."
+    },
+    "VSPOS": {
+      "step": "tests",
+      "tip": "Position from the POSITION codelist, e.g. \"SITTING\", \"SUPINE\", if collected."
+    },
+    "VSORRESU": {
+      "step": "results",
+      "tip": "Units as collected, from the VSRESU / UNIT codelist, e.g. \"mmHg\", \"beats/min\", \"C\", \"kg\", \"cm\"."
+    },
+    "VSSTRESU": {
+      "step": "results",
+      "tip": "One standard unit per test across the whole study, e.g. convert pounds to kg."
+    },
+    "VSLOBXFL": {
+      "step": "flags",
+      "tip": "\"Y\" on each subject's last non-missing value per test before first dose (DM.RFXSTDTC)."
+    }
+  }
+}

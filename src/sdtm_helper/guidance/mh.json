@@ -1,0 +1,22 @@
+{
+  "domain": "MH",
+  "summary": "One record per medical history event per subject. Code terms with MedDRA like AE, and mark pre-specified conditions with MHPRESP and MHOCCUR.",
+  "variables": {
+    "MHTERM": {
+      "step": "topic",
+      "tip": "The condition as written on the CRF."
+    },
+    "MHDECOD": {
+      "step": "topic",
+      "tip": "MedDRA preferred term, if you code medical history."
+    },
+    "MHCAT": {
+      "step": "qualifiers",
+      "tip": "Useful to separate e.g. \"GENERAL MEDICAL HISTORY\" from disease-specific history."
+    },
+    "MHENRTPT": {
+      "step": "timing",
+      "tip": "\"ONGOING\" with MHENTPT (e.g. \"SCREENING\") for conditions still present at screening."
+    }
+  }
+}

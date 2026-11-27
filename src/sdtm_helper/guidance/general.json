@@ -1,0 +1,743 @@
+{
+  "workflows": {
+    "Events": [
+      {
+        "id": "load",
+        "title": "Load the data",
+        "detail": "Run your libname program and import the raw tables for this domain. Make sure DM is mapped first: every domain takes USUBJID and the study day reference from it.",
+        "after": []
+      },
+      {
+        "id": "inspect",
+        "title": "Inspect the raw data",
+        "detail": "Look at one subject end to end, list the distinct values of coded fields, and note partial or oddly formatted dates.",
+        "after": [
+          "load"
+        ]
+      },
+      {
+        "id": "identifiers",
+        "title": "Identifiers",
+        "detail": "STUDYID, DOMAIN and USUBJID. Build USUBJID with exactly the same rule as in DM.",
+        "after": [
+          "inspect"
+        ]
+      },
+      {
+        "id": "topic",
+        "title": "Event term and coding",
+        "detail": "--TERM as collected, then the dictionary-coded --DECOD and hierarchy (MedDRA for AE and MH).",
+        "after": [
+          "identifiers"
+        ]
+      },
+      {
+        "id": "qualifiers",
+        "title": "Qualifiers",
+        "detail": "Category, severity, seriousness, outcome, relationship and similar collected details, recoded to controlled terminology.",
+        "after": [
+          "topic"
+        ]
+      },
+      {
+        "id": "timing",
+        "title": "Timing",
+        "detail": "Dates in ISO 8601, then study days from DM.RFSTDTC, EPOCH and visit variables.",
+        "after": [
+          "qualifiers"
+        ]
+      },
+      {
+        "id": "sequence",
+        "title": "Sequence number",
+        "detail": "Sort by USUBJID and the domain's natural keys, then number the records within each subject.",
+        "after": [
+          "timing"
+        ]
+      },
+      {
+        "id": "structure",
+        "title": "Order, labels and lengths",
+        "detail": "Keep only this domain's variables in SDTMIG order with the standard labels. Move extra collected data to SUPP--.",
+        "after": [
+          "sequence"
+        ]
+      },
+      {
+        "id": "check",
+        "title": "Run the P21-lite checks",
+        "detail": "Run them with --dm pointing at your DM so subjects and study days are checked too.",
+        "after": [
+          "structure"
+        ]
+      },
+      {
+        "id": "export",
+        "title": "Export to XPT",
+        "detail": "Write a version 5 transport file named after the domain, e.g. ae.xpt.",
+        "after": [
+          "check"
+        ]
+      }
+    ],
+    "Interventions": [
+      {
+        "id": "load",
+        "title": "Load the data",
+        "detail": "Run your libname program and import the raw tables for this domain. Make sure DM is mapped first: every domain takes USUBJID and the study day reference from it.",
+        "after": []
+      },
+      {
+        "id": "inspect",
+        "title": "Inspect the raw data",
+        "detail": "Look at one subject end to end, list the distinct values of coded fields, and note partial or oddly formatted dates.",
+        "after": [
+          "load"
+        ]
+      },
+      {
+        "id": "identifiers",
+        "title": "Identifiers",
+        "detail": "STUDYID, DOMAIN and USUBJID. Build USUBJID with exactly the same rule as in DM.",
+        "after": [
+          "inspect"
+        ]
+      },
+      {
+        "id": "topic",
+        "title": "Treatment name and coding",
+        "detail": "--TRT as collected, then --DECOD from the drug dictionary (WHODrug for CM) or the protocol treatment name (EX).",
+        "after": [
+          "identifiers"
+        ]
+      },
+      {
+        "id": "qualifiers",
+        "title": "Dose and other qualifiers",
+        "detail": "Dose, units, form, frequency, route, indication. Recode to controlled terminology.",
+        "after": [
+          "topic"
+        ]
+      },
+      {
+        "id": "timing",
+        "title": "Timing",
+        "detail": "Dates in ISO 8601, then study days from DM.RFSTDTC, EPOCH and visit variables.",
+        "after": [
+          "qualifiers"
+        ]
+      },
+      {
+        "id": "sequence",
+        "title": "Sequence number",
+        "detail": "Sort by USUBJID and the domain's natural keys, then number the records within each subject.",
+        "after": [
+          "timing"
+        ]
+      },
+      {
+        "id": "structure",
+        "title": "Order, labels and lengths",
+        "detail": "Keep only this domain's variables in SDTMIG order with the standard labels. Move extra collected data to SUPP--.",
+        "after": [
+          "sequence"
+        ]
+      },
+      {
+        "id": "check",
+        "title": "Run the P21-lite checks",
+        "detail": "Run them with --dm pointing at your DM so subjects and study days are checked too.",
+        "after": [
+          "structure"
+        ]
+      },
+      {
+        "id": "export",
+        "title": "Export to XPT",
+        "detail": "Write a version 5 transport file named after the domain, e.g. ae.xpt.",
+        "after": [
+          "check"
+        ]
+      }
+    ],
+    "Findings": [
+      {
+        "id": "load",
+        "title": "Load the data",
+        "detail": "Run your libname program and import the raw tables for this domain. Make sure DM is mapped first: every domain takes USUBJID and the study day reference from it.",
+        "after": []
+      },
+      {
+        "id": "inspect",
+        "title": "Inspect the raw data",
+        "detail": "Look at one subject end to end, list the distinct values of coded fields, and note partial or oddly formatted dates.",
+        "after": [
+          "load"
+        ]
+      },
+      {
+        "id": "identifiers",
+        "title": "Identifiers",
+        "detail": "STUDYID, DOMAIN and USUBJID. Build USUBJID with exactly the same rule as in DM.",
+        "after": [
+          "inspect"
+        ]
+      },
+      {
+        "id": "tests",
+        "title": "Test codes and names",
+        "detail": "One record per test per time point: --TESTCD and --TEST from controlled terminology, plus category, specimen, position or location.",
+        "after": [
+          "identifiers"
+        ]
+      },
+      {
+        "id": "results",
+        "title": "Results",
+        "detail": "--ORRES and --ORRESU as collected, then the standardised --STRESC, --STRESN and --STRESU. Tests not done get --STAT and --REASND.",
+        "after": [
+          "tests"
+        ]
+      },
+      {
+        "id": "flags",
+        "title": "Reference ranges and flags",
+        "detail": "Normal ranges, --NRIND, and the baseline flag --LOBXFL.",
+        "after": [
+          "results"
+        ]
+      },
+      {
+        "id": "timing",
+        "title": "Timing",
+        "detail": "Dates in ISO 8601, then study days from DM.RFSTDTC, EPOCH and visit variables.",
+        "after": [
+          "flags"
+        ]
+      },
+      {
+        "id": "sequence",
+        "title": "Sequence number",
+        "detail": "Sort by USUBJID and the domain's natural keys, then number the records within each subject.",
+        "after": [
+          "timing"
+        ]
+      },
+      {
+        "id": "structure",
+        "title": "Order, labels and lengths",
+        "detail": "Keep only this domain's variables in SDTMIG order with the standard labels. Move extra collected data to SUPP--.",
+        "after": [
+          "sequence"
+        ]
+      },
+      {
+        "id": "check",
+        "title": "Run the P21-lite checks",
+        "detail": "Run them with --dm pointing at your DM so subjects and study days are checked too.",
+        "after": [
+          "structure"
+        ]
+      },
+      {
+        "id": "export",
+        "title": "Export to XPT",
+        "detail": "Write a version 5 transport file named after the domain, e.g. ae.xpt.",
+        "after": [
+          "check"
+        ]
+      }
+    ],
+    "Findings About": [
+      {
+        "id": "load",
+        "title": "Load the data",
+        "detail": "Run your libname program and import the raw tables for this domain. Make sure DM is mapped first: every domain takes USUBJID and the study day reference from it.",
+        "after": []
+      },
+      {
+        "id": "inspect",
+        "title": "Inspect the raw data",
+        "detail": "Look at one subject end to end, list the distinct values of coded fields, and note partial or oddly formatted dates.",
+        "after": [
+          "load"
+        ]
+      },
+      {
+        "id": "identifiers",
+        "title": "Identifiers",
+        "detail": "STUDYID, DOMAIN and USUBJID. Build USUBJID with exactly the same rule as in DM.",
+        "after": [
+          "inspect"
+        ]
+      },
+      {
+        "id": "tests",
+        "title": "Test codes and names",
+        "detail": "One record per test per time point: --TESTCD and --TEST from controlled terminology, plus category, specimen, position or location.",
+        "after": [
+          "identifiers"
+        ]
+      },
+      {
+        "id": "results",
+        "title": "Results",
+        "detail": "--ORRES and --ORRESU as collected, then the standardised --STRESC, --STRESN and --STRESU. Tests not done get --STAT and --REASND.",
+        "after": [
+          "tests"
+        ]
+      },
+      {
+        "id": "flags",
+        "title": "Reference ranges and flags",
+        "detail": "Normal ranges, --NRIND, and the baseline flag --LOBXFL.",
+        "after": [
+          "results"
+        ]
+      },
+      {
+        "id": "timing",
+        "title": "Timing",
+        "detail": "Dates in ISO 8601, then study days from DM.RFSTDTC, EPOCH and visit variables.",
+        "after": [
+          "flags"
+        ]
+      },
+      {
+        "id": "sequence",
+        "title": "Sequence number",
+        "detail": "Sort by USUBJID and the domain's natural keys, then number the records within each subject.",
+        "after": [
+          "timing"
+        ]
+      },
+      {
+        "id": "structure",
+        "title": "Order, labels and lengths",
+        "detail": "Keep only this domain's variables in SDTMIG order with the standard labels. Move extra collected data to SUPP--.",
+        "after": [
+          "sequence"
+        ]
+      },
+      {
+        "id": "check",
+        "title": "Run the P21-lite checks",
+        "detail": "Run them with --dm pointing at your DM so subjects and study days are checked too.",
+        "after": [
+          "structure"
+        ]
+      },
+      {
+        "id": "export",
+        "title": "Export to XPT",
+        "detail": "Write a version 5 transport file named after the domain, e.g. ae.xpt.",
+        "after": [
+          "check"
+        ]
+      }
+    ]
+  },
+  "variables": {
+    "STUDYID": {
+      "step": "identifiers",
+      "tip": "The same constant study identifier as in DM."
+    },
+    "DOMAIN": {
+      "step": "identifiers",
+      "tip": "The two-letter domain code as a constant."
+    },
+    "USUBJID": {
+      "step": "identifiers",
+      "tip": "Must match DM.USUBJID exactly: build it with the same rule, never re-derive it differently."
+    },
+    "--SEQ": {
+      "step": "sequence",
+      "tip": "A number unique for each record within USUBJID in this domain. Derive it last, after sorting, so it is stable."
+    },
+    "--GRPID": {
+      "step": "sequence",
+      "tip": "Groups related records within a subject, e.g. the records of one panel. Optional."
+    },
+    "--SPID": {
+      "step": "identifiers",
+      "tip": "Sponsor-defined identifier, often the CRF line or page number. Useful for tracing back to the CRF."
+    },
+    "--REFID": {
+      "step": "identifiers",
+      "tip": "Internal or external reference, e.g. a lab accession number."
+    },
+    "--TERM": {
+      "step": "topic",
+      "tip": "The verbatim term exactly as collected (spelling errors included). Upper-casing is acceptable; do not recode it."
+    },
+    "--MODIFY": {
+      "step": "topic",
+      "tip": "The term after the coder changed the verbatim text to code it. Only when it differs from --TERM."
+    },
+    "--DECOD": {
+      "step": "topic",
+      "tip": "The dictionary-derived term (MedDRA preferred term for AE and MH, WHODrug for CM) or controlled terminology value."
+    },
+    "--LLT": {
+      "step": "topic",
+      "tip": "MedDRA lowest level term from your coding output."
+    },
+    "--LLTCD": {
+      "step": "topic",
+      "tip": "MedDRA lowest level term code (numeric)."
+    },
+    "--PTCD": {
+      "step": "topic",
+      "tip": "MedDRA preferred term code (numeric)."
+    },
+    "--HLT": {
+      "step": "topic",
+      "tip": "MedDRA high level term."
+    },
+    "--HLTCD": {
+      "step": "topic",
+      "tip": "MedDRA high level term code."
+    },
+    "--HLGT": {
+      "step": "topic",
+      "tip": "MedDRA high level group term."
+    },
+    "--HLGTCD": {
+      "step": "topic",
+      "tip": "MedDRA high level group term code."
+    },
+    "--BODSYS": {
+      "step": "topic",
+      "tip": "Body system or organ class used for analysis; for MedDRA-coded events this is the primary SOC."
+    },
+    "--BDSYCD": {
+      "step": "topic",
+      "tip": "Code for --BODSYS."
+    },
+    "--SOC": {
+      "step": "topic",
+      "tip": "MedDRA primary system organ class."
+    },
+    "--SOCCD": {
+      "step": "topic",
+      "tip": "MedDRA primary system organ class code."
+    },
+    "--CAT": {
+      "step": "qualifiers",
+      "tip": "A grouping you define, e.g. the CRF page the data came from. Use consistent upper-case values."
+    },
+    "--SCAT": {
+      "step": "qualifiers",
+      "tip": "A sub-grouping within --CAT. Only use it together with --CAT."
+    },
+    "--PRESP": {
+      "step": "qualifiers",
+      "tip": "\"Y\" when the event or treatment was pre-printed on the CRF (asked about specifically). Empty for spontaneously reported items."
+    },
+    "--OCCUR": {
+      "step": "qualifiers",
+      "tip": "\"Y\" or \"N\" for pre-specified items only, answering whether it occurred. Leave empty for spontaneously reported items."
+    },
+    "--STAT": {
+      "step": "results",
+      "tip": "\"NOT DONE\" when a pre-specified item or test was not done or not asked. Leave results empty on those records."
+    },
+    "--REASND": {
+      "step": "results",
+      "tip": "Why the item was not done. Only filled when --STAT is \"NOT DONE\"."
+    },
+    "--TRT": {
+      "step": "topic",
+      "tip": "The treatment name exactly as collected (CM) or the protocol-defined treatment name (EX)."
+    },
+    "--DOSE": {
+      "step": "qualifiers",
+      "tip": "Numeric dose per administration. If the dose was collected as text or a range, use --DOSTXT instead."
+    },
+    "--DOSTXT": {
+      "step": "qualifiers",
+      "tip": "Dose as text, for non-numeric values like \"200-400\" or \"<1\"."
+    },
+    "--DOSU": {
+      "step": "qualifiers",
+      "tip": "Units for --DOSE, from the UNIT codelist, e.g. \"mg\"."
+    },
+    "--DOSFRM": {
+      "step": "qualifiers",
+      "tip": "Dose form from the FRM codelist, e.g. \"TABLET\"."
+    },
+    "--DOSFRQ": {
+      "step": "qualifiers",
+      "tip": "Dosing frequency from the FREQ codelist, e.g. \"QD\" or \"BID\"."
+    },
+    "--DOSTOT": {
+      "step": "qualifiers",
+      "tip": "Total daily dose, when collected."
+    },
+    "--ROUTE": {
+      "step": "qualifiers",
+      "tip": "Route from the ROUTE codelist, e.g. \"ORAL\"."
+    },
+    "--INDC": {
+      "step": "qualifiers",
+      "tip": "The condition the treatment was given for, as collected."
+    },
+    "--CLAS": {
+      "step": "topic",
+      "tip": "Drug class from the dictionary, e.g. the ATC class used for analysis."
+    },
+    "--CLASCD": {
+      "step": "topic",
+      "tip": "Code for --CLAS."
+    },
+    "--LOC": {
+      "step": "tests",
+      "tip": "Anatomical location from the LOC codelist, e.g. \"ARM\"."
+    },
+    "--LAT": {
+      "step": "tests",
+      "tip": "Side from the LAT codelist: \"LEFT\", \"RIGHT\" or \"BILATERAL\"."
+    },
+    "--POS": {
+      "step": "tests",
+      "tip": "Body position during the test from the POSITION codelist, e.g. \"SITTING\"."
+    },
+    "--SEV": {
+      "step": "qualifiers",
+      "tip": "Severity from the AESEV-style codelist, e.g. \"MILD\", \"MODERATE\", \"SEVERE\"."
+    },
+    "--TESTCD": {
+      "step": "tests",
+      "tip": "Short test code from controlled terminology. At most 8 characters, starting with a letter, only letters, digits and underscores."
+    },
+    "--TEST": {
+      "step": "tests",
+      "tip": "Test name matching --TESTCD from the same codelist. At most 40 characters."
+    },
+    "--SPEC": {
+      "step": "tests",
+      "tip": "Specimen type from the SPECTYPE codelist, e.g. \"SERUM\" or \"URINE\"."
+    },
+    "--METHOD": {
+      "step": "tests",
+      "tip": "Method of the test, e.g. \"DIPSTICK\", from the METHOD codelist."
+    },
+    "--FAST": {
+      "step": "tests",
+      "tip": "\"Y\" or \"N\": was the subject fasting? Only when collected."
+    },
+    "--ORRES": {
+      "step": "results",
+      "tip": "The result exactly as collected or received, as text."
+    },
+    "--ORRESU": {
+      "step": "results",
+      "tip": "Units of --ORRES from the UNIT codelist (match case, e.g. \"mmHg\", \"kg\")."
+    },
+    "--ORNRLO": {
+      "step": "flags",
+      "tip": "Lower end of the normal range, in original units, as text."
+    },
+    "--ORNRHI": {
+      "step": "flags",
+      "tip": "Upper end of the normal range, in original units, as text."
+    },
+    "--STRESC": {
+      "step": "results",
+      "tip": "The result in a standard format and units, as text. Every non-empty --ORRES needs one."
+    },
+    "--STRESN": {
+      "step": "results",
+      "tip": "Numeric copy of --STRESC when --STRESC is a number; empty otherwise."
+    },
+    "--STRESU": {
+      "step": "results",
+      "tip": "Standard units for --STRESC and --STRESN, the same for every record of a test."
+    },
+    "--STNRLO": {
+      "step": "flags",
+      "tip": "Lower end of the normal range in standard units (numeric)."
+    },
+    "--STNRHI": {
+      "step": "flags",
+      "tip": "Upper end of the normal range in standard units (numeric)."
+    },
+    "--NRIND": {
+      "step": "flags",
+      "tip": "Where the result falls against the normal range, e.g. \"LOW\", \"NORMAL\", \"HIGH\" (NRIND codelist)."
+    },
+    "--LOBXFL": {
+      "step": "flags",
+      "tip": "\"Y\" on the last non-missing result before first exposure to study treatment, per subject and test; empty otherwise. This replaces --BLFL as the main baseline flag in SDTMIG 3.4."
+    },
+    "--BLFL": {
+      "step": "flags",
+      "tip": "Baseline flag. In SDTMIG 3.4, prefer --LOBXFL; use --BLFL only if your sponsor still needs it."
+    },
+    "--DRVFL": {
+      "step": "results",
+      "tip": "\"Y\" when the record was derived rather than collected (e.g. a calculated average)."
+    },
+    "--TOX": {
+      "step": "flags",
+      "tip": "Toxicity description, e.g. the CTCAE term."
+    },
+    "--TOXGR": {
+      "step": "flags",
+      "tip": "Toxicity grade, e.g. \"1\" to \"5\" for CTCAE."
+    },
+    "--CLSIG": {
+      "step": "flags",
+      "tip": "\"Y\" or \"N\": clinically significant, as judged by the investigator."
+    },
+    "VISITNUM": {
+      "step": "timing",
+      "tip": "Numeric visit number matching TV.VISITNUM for planned visits. Unplanned visits get a number between the visits around them, e.g. 3.01."
+    },
+    "VISIT": {
+      "step": "timing",
+      "tip": "Visit name matching TV.VISIT for planned visits, e.g. \"WEEK 4\"; for unplanned visits use something like \"UNSCHEDULED 3.01\"."
+    },
+    "VISITDY": {
+      "step": "timing",
+      "tip": "Planned study day of the visit, from TV."
+    },
+    "TAETORD": {
+      "step": "timing",
+      "tip": "Order of the element within the subject's arm, from TA. Derive by comparing the record date with SE."
+    },
+    "EPOCH": {
+      "step": "timing",
+      "tip": "The trial epoch the record falls in (e.g. \"SCREENING\", \"TREATMENT\", \"FOLLOW-UP\"), derived from the subject's elements in SE."
+    },
+    "--DTC": {
+      "step": "timing",
+      "tip": "Date/time of collection in ISO 8601."
+    },
+    "--STDTC": {
+      "step": "timing",
+      "tip": "Start date/time in ISO 8601. Keep partial dates partial; never impute in SDTM."
+    },
+    "--ENDTC": {
+      "step": "timing",
+      "tip": "End date/time in ISO 8601. Leave it empty for ongoing records and use --ENRTPT and --ENTPT instead."
+    },
+    "--DY": {
+      "step": "timing",
+      "tip": "Study day of --DTC relative to DM.RFSTDTC: date minus RFSTDTC plus 1 on or after RFSTDTC, date minus RFSTDTC before it. No day 0. Only when the date is complete."
+    },
+    "--STDY": {
+      "step": "timing",
+      "tip": "Study day of --STDTC relative to DM.RFSTDTC: date minus RFSTDTC plus 1 on or after RFSTDTC, date minus RFSTDTC before it. No day 0. Only when the start date is complete."
+    },
+    "--ENDY": {
+      "step": "timing",
+      "tip": "Study day of --ENDTC, calculated the same way as --STDY. No day 0."
+    },
+    "--DUR": {
+      "step": "timing",
+      "tip": "Duration in ISO 8601 (e.g. \"P3D\"), only when collected, not derived from start and end."
+    },
+    "--TPT": {
+      "step": "timing",
+      "tip": "Planned time point name, e.g. \"PRE-DOSE\" or \"2H POST-DOSE\"."
+    },
+    "--TPTNUM": {
+      "step": "timing",
+      "tip": "Numeric order of --TPT, for sorting."
+    },
+    "--ELTM": {
+      "step": "timing",
+      "tip": "Planned elapsed time from the reference point, in ISO 8601 duration, e.g. \"PT2H\"."
+    },
+    "--TPTREF": {
+      "step": "timing",
+      "tip": "The reference point for --TPT, e.g. \"DOSE\"."
+    },
+    "--RFTDTC": {
+      "step": "timing",
+      "tip": "Date/time of the reference point named in --TPTREF."
+    },
+    "--ENRF": {
+      "step": "timing",
+      "tip": "End relative to the study reference period: \"BEFORE\", \"DURING\", \"AFTER\", \"DURING/AFTER\", \"U\". Use when only that was collected."
+    },
+    "--ENRTPT": {
+      "step": "timing",
+      "tip": "End relative to a reference time point, e.g. \"ONGOING\" when the item continues at the time named in --ENTPT."
+    },
+    "--ENTPT": {
+      "step": "timing",
+      "tip": "The reference time point for --ENRTPT, e.g. \"END OF STUDY\"."
+    },
+    "--STRTPT": {
+      "step": "timing",
+      "tip": "Start relative to a reference time point, e.g. \"BEFORE\"."
+    },
+    "--STTPT": {
+      "step": "timing",
+      "tip": "The reference time point for --STRTPT."
+    },
+    "--EVAL": {
+      "step": "results",
+      "tip": "Who evaluated the result, e.g. \"INVESTIGATOR\"."
+    },
+    "--NAM": {
+      "step": "tests",
+      "tip": "Name of the laboratory or vendor that did the test."
+    }
+  },
+  "general_tips": {
+    "iso8601": "Dates in SDTM are character values in ISO 8601: YYYY-MM-DD, or YYYY-MM-DDThh:mm:ss with a time. Keep partial dates partial (\"2023-05\" or \"2023\"), never impute them in SDTM. In SAS, the E8601DA. and E8601DT. formats write these from SAS date and datetime values.",
+    "codelist": "Values must match the CDISC submission values in the codelist exactly, including case.",
+    "suppqual": "Collected data with no standard variable in the domain go in a SUPP-- dataset (e.g. SUPPAE), not as extra columns."
+  },
+  "generic_workflow": [
+    {
+      "id": "load",
+      "title": "Load the data",
+      "detail": "Run your libname program and import the source tables.",
+      "after": []
+    },
+    {
+      "id": "identifiers",
+      "title": "Identifiers and keys",
+      "detail": "STUDYID, DOMAIN and the domain's key variables.",
+      "after": [
+        "load"
+      ]
+    },
+    {
+      "id": "content",
+      "title": "Remaining variables",
+      "detail": "Fill the rest of the variables from your source, recoding to controlled terminology.",
+      "after": [
+        "identifiers"
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Order, labels and lengths",
+      "detail": "Keep only this domain's variables in SDTMIG order with the standard labels.",
+      "after": [
+        "content"
+      ]
+    },
+    {
+      "id": "check",
+      "title": "Run the P21-lite checks",
+      "detail": "Fix what the checks report before exporting.",
+      "after": [
+        "structure"
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Export to XPT",
+      "detail": "Write a version 5 transport file named after the domain.",
+      "after": [
+        "check"
+      ]
+    }
+  ]
+}

@@ -13,7 +13,8 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 | 1. Foundation | SAS connection through SASPy, local SDTMIG and controlled terminology, saved progress | Done |
 | 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | Done |
 | 3. P21-lite checks | Small, fixable conformance checks at the end of each domain | Done |
-| 4. More domains and a Windows app | AE, CM, EX, VS, LB and others; installer for Windows; SAS 9.4 Desktop | Planned |
+| 4a. Guidance for all domains | Shared workflows and tips for Events, Interventions and Findings domains, plus specific tips for AE, MH, DS, CM, EX, VS and LB | Done |
+| 4b. Windows app | Desktop window, installer for Windows, SAS 9.4 Desktop | Planned |
 
 ## Getting started
 
@@ -46,6 +47,8 @@ Errors, warnings and notices, each with a suggested fix:
 - ISO 8601 dates and durations (partial dates allowed), DOMAIN value, controlled terminology (after `fetch-ct`)
 - One record per subject in DM, --SEQ unique within USUBJID, start after end
 - DM rules: AGEU with AGE, DTHFL only "Y", ARMNRS when ARMCD is empty
+- AE: serious events have a seriousness criterion. Findings: every result has a standard result, --STRESN matches --STRESC, no results on NOT DONE records
+- Class variables the SDTM model allows (e.g. TAETORD in DS) are noted, not flagged as errors
 - Against DM: every USUBJID exists in DM, --DY matches the date and RFSTDTC, no study day 0
 
 The checks read your table through SASPy and never change it. They are a quick first pass, not a replacement for Pinnacle 21.

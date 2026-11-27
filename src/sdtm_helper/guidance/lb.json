@@ -1,0 +1,42 @@
+{
+  "domain": "LB",
+  "summary": "One record per lab test per time point per visit per subject. Results often arrive from a vendor: keep their values in LBORRES and convert to standard units in LBSTRESC/N/U.",
+  "variables": {
+    "LBTESTCD": {
+      "step": "tests",
+      "tip": "From the LBTESTCD codelist, e.g. \"ALT\", \"AST\", \"BILI\", \"ALB\", \"HGB\"."
+    },
+    "LBCAT": {
+      "step": "tests",
+      "tip": "E.g. \"CHEMISTRY\", \"HEMATOLOGY\", \"URINALYSIS\"."
+    },
+    "LBSPEC": {
+      "step": "tests",
+      "tip": "Specimen, e.g. \"SERUM\", \"PLASMA\", \"BLOOD\", \"URINE\"."
+    },
+    "LBORRES": {
+      "step": "results",
+      "tip": "As received from the lab, including text such as \"<0.5\"."
+    },
+    "LBSTRESN": {
+      "step": "results",
+      "tip": "Numeric standardised value; empty for results like \"<0.5\" (keep those in LBSTRESC)."
+    },
+    "LBSTRESU": {
+      "step": "results",
+      "tip": "One standard unit per test, usually SI or conventional as your sponsor decides, e.g. \"U/L\", \"umol/L\", \"g/L\"."
+    },
+    "LBNRIND": {
+      "step": "flags",
+      "tip": "\"LOW\", \"NORMAL\", \"HIGH\" (or \"ABNORMAL\") from the lab's reference range."
+    },
+    "LBLOBXFL": {
+      "step": "flags",
+      "tip": "\"Y\" on each subject's last non-missing result per test before first dose."
+    },
+    "LBTOXGR": {
+      "step": "flags",
+      "tip": "CTCAE grade if your protocol grades lab toxicity."
+    }
+  }
+}

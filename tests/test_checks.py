@@ -97,3 +97,41 @@ def test_controlled_terminology():
 
 def test_ct_skipped_notice_without_terminology():
     assert "CT-SKIPPED" in checks(run_checks(DM, read("lorna_dm.csv", DM)), "Notice")
+
+
+@pytest.mark.parametrize("code", ["AE", "CM", "EX", "MH", "DS", "VS", "LB"])
+def test_lorna_domains_have_no_errors(code):
+    spec = load_domain(code, "3.4")
+    report = run_checks(spec, read(f"lorna_{code.lower()}.csv", spec), dm=read("lorna_dm.csv", DM))
+    assert report.passed, [f.message for f in report.findings if f.severity == ERROR]
+
+
+def test_ae_serious_criteria():
+    ae = read("lorna_ae.csv", AE)
+    ae["AESHOSP"] = pd.NA
+    ae.loc[0, "AESER"] = "Y"
+    ae.loc[1, "AESER"] = "N"
+    ae.loc[1, "AESHOSP"] = "Y"
+    sev = {(f.check, f.severity) for f in run_checks(AE, ae).findings}
+    assert ("AE-SERIOUS", "Warning") in sev and ("AE-SERIOUS", ERROR) in sev
+
+
+def test_findings_result_consistency():
+    vs_spec = load_domain("VS", "3.4")
+    vs = read("lorna_vs.csv", vs_spec)
+    row = vs.index[vs["VSORRES"].notna()][0]
+    vs.loc[row, "VSSTRESC"] = pd.NA
+    row2 = vs.index[vs["VSSTRESN"].notna()][1]
+    vs.loc[row2, "VSSTRESN"] = vs.loc[row2, "VSSTRESN"] + 1
+    found = {f.check for f in run_checks(vs_spec, vs).findings}
+    assert {"STRESC-MISSING", "STRESN-DIFFERS"} <= found
+
+
+def test_class_variable_is_a_notice_not_an_error():
+    ds = load_domain("DS", "3.4")
+    df = read("lorna_ds.csv", ds)
+    assert "TAETORD" in df.columns
+    report = run_checks(ds, df, dm=read("lorna_dm.csv", DM))
+    assert any(f.check == "CLASS-VARIABLE" and f.variable == "TAETORD" for f in report.findings)
+    df["DSFOO"] = "x"
+    assert "NONSTANDARD" in checks(run_checks(ds, df))

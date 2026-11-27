@@ -1,3 +1,4 @@
+import pytest
 import json
 from pathlib import Path
 
@@ -54,3 +55,29 @@ def test_every_tip_points_to_a_real_step():
     steps = {s.id for s in guide.workflow}
     tips = json.loads((Path(__file__).parents[1] / "src/sdtm_helper/guidance/dm.json").read_text())
     assert all(v["step"] in steps for v in tips["variables"].values())
+
+
+from sdtm_helper.standards.domain import load_domain
+
+
+@pytest.mark.parametrize("code", ["AE", "MH", "DS", "CM", "EX", "VS", "LB", "QS", "EG"])
+def test_class_guidance_covers_required_and_expected(code):
+    spec = load_domain(code, "3.4")
+    guide = build_guide(spec)
+    assert guide.workflow[0].id == "load" and guide.workflow[-1].id == "export"
+    missing_tips = [v.name for v in spec.variables if v.core in ("Req", "Exp") and v.name not in guide.tips]
+    assert not missing_tips
+    placed = {n for s in guide.workflow for n in s.variables}
+    assert set(guide.tips) <= placed
+
+
+def test_shared_suffix_tip_and_domain_override():
+    ae = build_guide(load_domain("AE", "3.4"))
+    assert "MedDRA preferred term" in ae.tips["AEDECOD"] and "Required" in ae.tips["AEDECOD"]
+    assert "No day 0" in ae.tips["AESTDY"]
+    assert "ISO 8601" in ae.explain("AESTDTC", load_domain("AE", "3.4"))
+
+
+def test_domain_without_tips_gets_generic_workflow():
+    guide = build_guide(load_domain("TA", "3.4"))
+    assert [s.id for s in guide.workflow][-2:] == ["check", "export"]

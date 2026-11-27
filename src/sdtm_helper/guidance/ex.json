@@ -1,0 +1,30 @@
+{
+  "domain": "EX",
+  "summary": "One record per constant-dosing interval of protocol-specified treatment per subject, in protocol units. EX drives DM.RFXSTDTC and RFXENDTC, so map it before finishing DM.",
+  "variables": {
+    "EXTRT": {
+      "step": "topic",
+      "tip": "The protocol name of the treatment, e.g. \"DRUG A\" or \"PLACEBO\". Blinded studies still use the actual treatment name in SDTM."
+    },
+    "EXDOSE": {
+      "step": "qualifiers",
+      "tip": "Dose per administration in protocol units, as a number. Placebo usually gets 0 or the matching dose amount, as your protocol defines."
+    },
+    "EXDOSU": {
+      "step": "qualifiers",
+      "tip": "Units of EXDOSE from the UNIT codelist."
+    },
+    "EXSTDTC": {
+      "step": "timing",
+      "tip": "Start of the dosing interval. The earliest EXSTDTC per subject becomes DM.RFXSTDTC."
+    },
+    "EXENDTC": {
+      "step": "timing",
+      "tip": "End of the dosing interval. The latest EXENDTC per subject becomes DM.RFXENDTC."
+    },
+    "EXADJ": {
+      "step": "qualifiers",
+      "tip": "Reason for a dose adjustment, if collected."
+    }
+  }
+}

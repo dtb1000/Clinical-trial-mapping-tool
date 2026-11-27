@@ -44,6 +44,7 @@ class DomainSpec:
     description: str
     version: str
     variables: list[Variable]
+    klass: str = ""           # observation class, e.g. "Events" or "Findings"
 
     def variable(self, name: str) -> Variable | None:
         name = name.upper()
@@ -84,7 +85,14 @@ def parse_domain(data: dict, version: str = SDTMIG_VERSION) -> DomainSpec:
         description=data.get("description", ""),
         version=version,
         variables=variables,
+        klass=data.get("class", "") or _class_from_link(data),
     )
+
+
+def _class_from_link(data: dict) -> str:
+    """The CDISC Library API gives the class as a link title rather than a field."""
+    link = (data.get("_links", {}) or {}).get("parentClass", {}) or {}
+    return link.get("title", "") if isinstance(link, dict) else ""
 
 
 BUNDLE_DIR = Path(__file__).resolve().parents[1] / "data"
