@@ -105,6 +105,40 @@ def study_day(dtc, rfstdtc) -> int | None:
     return diff + 1 if diff >= 0 else diff
 
 
+GENERAL_CLASSES = ("Events", "Interventions", "Findings", "Findings About")
+_POOLS: dict[tuple[str, str], set[str]] = {}
+
+
+def _generic(name: str, code: str) -> str:
+    return "--" + name[len(code):] if name.startswith(code) and len(name) > len(code) else name
+
+
+def class_variable_pool(spec: DomainSpec) -> set[str]:
+    """Variables the SDTM model lets you add to a domain of this class.
+
+    Built from the bundled SDTMIG: every variable used by any domain of the same
+    class, plus identifiers and timing variables used by any general-class domain.
+    """
+    key = (spec.version, spec.klass)
+    if key in _POOLS:
+        return _POOLS[key]
+    from ..standards.domain import bundle_manifest, load_domain
+    pool: set[str] = set()
+    manifest = bundle_manifest(spec.version)
+    if spec.klass in GENERAL_CLASSES and manifest:
+        for code in manifest["domains"]:
+            try:
+                other = load_domain(code, spec.version)
+            except FileNotFoundError:
+                continue
+            same = other.klass == spec.klass or {other.klass, spec.klass} <= {"Findings", "Findings About"}
+            for v in other.variables:
+                if same or (other.klass in GENERAL_CLASSES and v.role in ("Identifier", "Timing")):
+                    pool.add(_generic(v.name, other.code))
+    _POOLS[key] = pool
+    return pool
+
+
 # -- the checks -----------------------------------------------------------
 
 def check_structure(spec: DomainSpec, info: TableInfo | None, df: pd.DataFrame) -> list[Finding]:
@@ -119,8 +153,14 @@ def check_structure(spec: DomainSpec, info: TableInfo | None, df: pd.DataFrame) 
         elif var.core == "Exp":
             out.append(Finding("EXP-MISSING", WARNING, f"Expected variable {var.name} is not in the dataset.",
                                var.name, fix="Add it, left empty if the data were not collected; explain in the reviewer's guide."))
+    pool = class_variable_pool(spec)
     for name in df.columns:
-        if spec.variable(name) is None:
+        if spec.variable(name) is None and _generic(name.upper(), spec.code) in pool:
+            out.append(Finding("CLASS-VARIABLE", NOTICE,
+                               f"{name.upper()} is not listed in SDTMIG {spec.code} but is a {spec.klass} class variable, "
+                               "which the SDTM model allows you to add.", name.upper(),
+                               fix="Fine if it is needed; check the SDTM model's usage restrictions."))
+        elif spec.variable(name) is None:
             out.append(Finding("NONSTANDARD", ERROR, f"{name.upper()} is not a {spec.code} variable in SDTMIG {spec.version}.",
                                name.upper(), fix=f"Drop it, or move it to SUPP{spec.code} if the data must be submitted."))
         if len(name) > 8:
@@ -276,6 +316,65 @@ def check_dm_rules(df: pd.DataFrame) -> list[Finding]:
     return out
 
 
+def check_ae_rules(df: pd.DataFrame) -> list[Finding]:
+    out: list[Finding] = []
+    c = {k.upper(): k for k in df.columns}
+    if "AESER" not in c:
+        return out
+    criteria = [n for n in ("AESDTH", "AESHOSP", "AESLIFE", "AESDISAB", "AESCONG", "AESMIE", "AESCAN", "AESOD") if n in c]
+    if not criteria:
+        return out
+    serious = (df[c["AESER"]].astype("string").str.strip() == "Y").fillna(False).astype(bool)
+    any_y = pd.Series(False, index=df.index)
+    for n in criteria:
+        any_y |= (df[c[n]].astype("string").str.strip() == "Y").fillna(False).astype(bool)
+    bad = serious & ~any_y
+    if bad.any():
+        out.append(Finding("AE-SERIOUS", WARNING, f"AESER is \"Y\" on {int(bad.sum())} record(s) with no seriousness criterion set to \"Y\".",
+                           "AESER", int(bad.sum()),
+                           _examples(df.loc[bad, c["USUBJID"]]) if "USUBJID" in c else [],
+                           fix="Set the criterion that applies (" + ", ".join(criteria) + ")."))
+    flagged = ~serious & any_y
+    if flagged.any():
+        out.append(Finding("AE-SERIOUS", ERROR, f"A seriousness criterion is \"Y\" on {int(flagged.sum())} record(s) where AESER is not \"Y\".",
+                           "AESER", int(flagged.sum())))
+    return out
+
+
+def check_findings(spec: DomainSpec, df: pd.DataFrame) -> list[Finding]:
+    """Result consistency for Findings domains."""
+    out: list[Finding] = []
+    c = {k.upper(): k for k in df.columns}
+    p = spec.code
+
+    def col(suffix):
+        return df[c[p + suffix]] if p + suffix in c else None
+
+    orres, stresc, stresn, stat = col("ORRES"), col("STRESC"), col("STRESN"), col("STAT")
+    if orres is not None and stresc is not None:
+        bad = (~_blank(orres) & _blank(stresc)).sum()
+        if bad:
+            out.append(Finding("STRESC-MISSING", ERROR, f"{p}STRESC is empty on {bad} record(s) that have {p}ORRES.", p + "STRESC", int(bad),
+                               fix=f"Every collected result needs a standardised {p}STRESC."))
+    if stresc is not None and stresn is not None:
+        as_num = pd.to_numeric(stresc, errors="coerce")
+        num = pd.to_numeric(stresn, errors="coerce")
+        missing_n = (as_num.notna() & num.isna()).sum()
+        if missing_n:
+            out.append(Finding("STRESN-MISSING", ERROR, f"{p}STRESN is empty on {missing_n} record(s) where {p}STRESC is numeric.",
+                               p + "STRESN", int(missing_n)))
+        differ = (as_num.notna() & num.notna() & ((as_num - num).abs() > 1e-9)).sum()
+        if differ:
+            out.append(Finding("STRESN-DIFFERS", ERROR, f"{p}STRESN does not equal {p}STRESC on {differ} record(s).", p + "STRESN", int(differ)))
+    if stat is not None and orres is not None:
+        notdone = stat.astype("string").str.strip() == "NOT DONE"
+        bad = (notdone.fillna(False) & ~_blank(orres)).sum()
+        if bad:
+            out.append(Finding("NOT-DONE-RESULT", ERROR, f"{p}ORRES has a value on {bad} record(s) marked {p}STAT = \"NOT DONE\".",
+                               p + "ORRES", int(bad)))
+    return out
+
+
 def check_against_dm(spec: DomainSpec, df: pd.DataFrame, dm: pd.DataFrame) -> list[Finding]:
     """Cross-domain checks that need DM: subjects exist in DM, and study days match RFSTDTC."""
     out: list[Finding] = []
@@ -316,6 +415,11 @@ def run_checks(spec: DomainSpec, df: pd.DataFrame, info: TableInfo | None = None
     findings = check_structure(spec, info, df) + check_values(spec, df, codelists) + check_keys(spec, df)
     if spec.code == "DM":
         findings += check_dm_rules(df)
+    if spec.code == "AE":
+        findings += check_ae_rules(df)
+    if spec.klass.startswith("Findings"):
+        findings += check_findings(spec, df)
+    if spec.code == "DM":
         dm = df if dm is None else dm
     if dm is not None:
         findings += check_against_dm(spec, df, dm)

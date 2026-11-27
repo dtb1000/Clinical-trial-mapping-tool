@@ -84,11 +84,37 @@ class DomainGuide:
         return [s for s in self.workflow if s.id not in done and all(p in done for p in s.after)]
 
 
-def load_tips(domain: str) -> dict:
-    path = HERE / f"{domain.lower()}.json"
-    if not path.exists():
-        return {"domain": domain.upper(), "summary": "", "workflow": [], "variables": {}, "general_tips": {}}
-    return json.loads(path.read_text(encoding="utf-8"))
+def _read(name: str) -> dict:
+    path = HERE / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def load_tips(domain: str, klass: str = "") -> dict:
+    """Merge the domain's own tips over the shared tips for its observation class."""
+    general, own = _read("general"), _read(domain.lower())
+    workflow = (own.get("workflow") or general.get("workflows", {}).get(klass)
+                or general.get("generic_workflow", []))
+    return {
+        "domain": domain.upper(),
+        "summary": own.get("summary", ""),
+        "workflow": workflow,
+        "general_tips": {**general.get("general_tips", {}), **own.get("general_tips", {})},
+        "variables": own.get("variables", {}),
+        "shared_variables": general.get("variables", {}),
+    }
+
+
+def tip_for(name: str, domain: str, tips: dict) -> dict | None:
+    """Domain tip first, then a shared tip for the exact name, then the shared --SUFFIX tip."""
+    name = name.upper()
+    if name in tips["variables"]:
+        return tips["variables"][name]
+    shared = tips["shared_variables"]
+    if name in shared:
+        return shared[name]
+    if name.startswith(domain.upper()):
+        return shared.get("--" + name[len(domain):])
+    return None
 
 
 def build_checklist(spec: DomainSpec, columns: list[str] | None = None,
@@ -125,16 +151,28 @@ def build_checklist(spec: DomainSpec, columns: list[str] | None = None,
 
 def build_guide(spec: DomainSpec, columns: list[str] | None = None,
                 missing: dict[str, int] | None = None, nobs: int = 0) -> DomainGuide:
-    tips = load_tips(spec.code)
+    tips = load_tips(spec.code, spec.klass)
+    step_ids = {s["id"] for s in tips["workflow"]}
+    var_tips: dict[str, str] = {}
     by_step: dict[str, list[str]] = {}
-    for name, info in tips.get("variables", {}).items():
-        by_step.setdefault(info.get("step", ""), []).append(name)
-    workflow = [WorkflowStep(variables=by_step.get(s["id"], []), **s) for s in tips.get("workflow", [])]
+    names = [v.name for v in spec.variables] + [n for n in tips["variables"] if not spec.variable(n)]
+    for name in names:
+        info = tip_for(name, spec.code, tips)
+        if not info:
+            continue
+        var_tips[name] = info.get("tip", "")
+        step = info.get("step", "")
+        if step not in step_ids:      # shared tips name steps that a domain's own workflow may not have
+            fallbacks = ["dates"] if step == "timing" else ["qualifiers", "tests", "content"]
+            step = next((f for f in fallbacks if f in step_ids), "")
+        if step:
+            by_step.setdefault(step, []).append(name)
+    workflow = [WorkflowStep(variables=by_step.get(s["id"], []), **s) for s in tips["workflow"]]
     return DomainGuide(
         domain=spec.code,
-        summary=tips.get("summary", ""),
-        general_tips=tips.get("general_tips", {}),
-        tips={k: v.get("tip", "") for k, v in tips.get("variables", {}).items()},
+        summary=tips["summary"],
+        general_tips=tips["general_tips"],
+        tips=var_tips,
         workflow=workflow,
         checklist=build_checklist(spec, columns, missing, nobs),
     )

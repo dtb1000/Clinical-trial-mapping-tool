@@ -1,0 +1,26 @@
+{
+  "domain": "DS",
+  "summary": "One record per disposition event or protocol milestone per subject: informed consent, randomisation, completion or discontinuation for each epoch.",
+  "variables": {
+    "DSTERM": {
+      "step": "topic",
+      "tip": "The reason or event as collected, e.g. \"Subject moved away\"."
+    },
+    "DSDECOD": {
+      "step": "topic",
+      "tip": "Standard term: for disposition events from the NCOMPLT codelist (e.g. \"COMPLETED\", \"ADVERSE EVENT\", \"WITHDRAWAL BY SUBJECT\"), for milestones from PROTMLST (e.g. \"INFORMED CONSENT OBTAINED\", \"RANDOMIZED\")."
+    },
+    "DSCAT": {
+      "step": "qualifiers",
+      "tip": "\"DISPOSITION EVENT\", \"PROTOCOL MILESTONE\" or \"OTHER EVENT\"."
+    },
+    "DSSTDTC": {
+      "step": "timing",
+      "tip": "Date of the event. The informed consent record's date should equal DM.RFICDTC."
+    },
+    "EPOCH": {
+      "step": "timing",
+      "tip": "For disposition events, the epoch being completed or left, e.g. \"TREATMENT\"."
+    }
+  }
+}

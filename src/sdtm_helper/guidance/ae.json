@@ -1,0 +1,50 @@
+{
+  "domain": "AE",
+  "summary": "One record per adverse event per subject. Map DM first, code terms with MedDRA, and remember: an event recorded as serious needs its seriousness criteria too.",
+  "variables": {
+    "AETERM": {
+      "step": "topic",
+      "tip": "The reported event term exactly as written on the CRF. Required."
+    },
+    "AEDECOD": {
+      "step": "topic",
+      "tip": "MedDRA preferred term from your coding output. Required: every AE must be coded before submission."
+    },
+    "AESER": {
+      "step": "qualifiers",
+      "tip": "\"Y\" or \"N\" (NY codelist). When \"Y\", at least one of AESDTH, AESHOSP, AESLIFE, AESDISAB, AESCONG or AESMIE should be \"Y\"."
+    },
+    "AEREL": {
+      "step": "qualifiers",
+      "tip": "Causality as collected, e.g. \"RELATED\" / \"NOT RELATED\" or your CRF's scale. Use one consistent set of values."
+    },
+    "AEACN": {
+      "step": "qualifiers",
+      "tip": "Action taken with study treatment from the ACN codelist, e.g. \"DOSE NOT CHANGED\", \"DRUG WITHDRAWN\"."
+    },
+    "AEOUT": {
+      "step": "qualifiers",
+      "tip": "Outcome from the OUT codelist, e.g. \"RECOVERED/RESOLVED\", \"NOT RECOVERED/NOT RESOLVED\", \"FATAL\"."
+    },
+    "AESEV": {
+      "step": "qualifiers",
+      "tip": "\"MILD\", \"MODERATE\" or \"SEVERE\" (AESEV codelist). If you grade with CTCAE, use AETOXGR instead or as well."
+    },
+    "AESDTH": {
+      "step": "qualifiers",
+      "tip": "\"Y\" if the event resulted in death. Then DM.DTHFL should be \"Y\" too."
+    },
+    "AESHOSP": {
+      "step": "qualifiers",
+      "tip": "\"Y\" if the event required or prolonged hospitalisation."
+    },
+    "AECONTRT": {
+      "step": "qualifiers",
+      "tip": "\"Y\" or \"N\": was a concomitant treatment given for the event? Those treatments go in CM."
+    },
+    "AEENRTPT": {
+      "step": "timing",
+      "tip": "Use \"ONGOING\" (with AEENTPT) for events still ongoing at the end of the study, instead of an end date."
+    }
+  }
+}

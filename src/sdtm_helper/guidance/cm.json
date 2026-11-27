@@ -1,0 +1,30 @@
+{
+  "domain": "CM",
+  "summary": "One record per medication (or constant-dosing interval) per subject. Code with WHODrug, and keep the verbatim name in CMTRT.",
+  "variables": {
+    "CMTRT": {
+      "step": "topic",
+      "tip": "The medication name exactly as collected."
+    },
+    "CMDECOD": {
+      "step": "topic",
+      "tip": "WHODrug preferred name from your coding output."
+    },
+    "CMCAT": {
+      "step": "qualifiers",
+      "tip": "E.g. \"PRIOR\" / \"CONCOMITANT\" if your CRF separates them, or the CRF page."
+    },
+    "CMINDC": {
+      "step": "qualifiers",
+      "tip": "Indication as collected, e.g. \"HEADACHE\"."
+    },
+    "CMSTRF": {
+      "step": "timing",
+      "tip": "Start relative to the study reference period, e.g. \"BEFORE\" for prior medications with no start date."
+    },
+    "CMENRTPT": {
+      "step": "timing",
+      "tip": "\"ONGOING\" with CMENTPT for medications still taken at the reference time point."
+    }
+  }
+}
