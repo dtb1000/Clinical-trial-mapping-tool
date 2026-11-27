@@ -11,6 +11,7 @@ from .standards.domain import DomainNotCached, load_domain
 from .standards import terminology
 from .guidance.engine import build_guide
 from .updates import check_for_update
+from .checks.engine import format_report, run_checks
 
 
 def _connect(args):
@@ -153,6 +154,32 @@ def cmd_step(args) -> int:
     return 0
 
 
+def cmd_check(args) -> int:
+    """Run the P21-lite checks on a finished domain."""
+    spec = load_domain(args.domain, args.version)
+    try:
+        codelists = terminology.load()
+    except FileNotFoundError:
+        codelists = None
+    sas = _connect(args)
+    try:
+        info = sas.describe(args.libref, args.table)
+        df = sas.fetch(args.libref, args.table)
+        dm = None
+        if args.dm and spec.code != "DM":
+            dm_lib, _, dm_table = args.dm.partition(".")
+            dm = sas.fetch(dm_lib, dm_table or "DM")
+    finally:
+        sas.close()
+    report = run_checks(spec, df, info, codelists, dm)
+    print(format_report(report))
+    if report.passed:
+        saved = progress.load(args.study, spec.code) or progress.DomainProgress(study=args.study, domain=spec.code)
+        saved.mark_done("check")
+        progress.save(saved)
+    return 0 if report.passed else 2
+
+
 def cmd_progress(args) -> int:
     saved = progress.list_saved()
     if not saved:
@@ -221,6 +248,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--undo", action="store_true")
     p.add_argument("--version", default=SDTMIG_VERSION)
     p.set_defaults(func=cmd_step)
+
+    p = sub.add_parser("check", help="Run P21-lite checks on a finished domain")
+    p.add_argument("domain"); p.add_argument("libref"); p.add_argument("table")
+    p.add_argument("--dm", help="Your DM table as LIB.TABLE, for cross-domain checks, e.g. FINAL.DM")
+    p.add_argument("--study", default="default")
+    p.add_argument("--version", default=SDTMIG_VERSION)
+    sas_options(p)
+    p.set_defaults(func=cmd_check)
 
     p = sub.add_parser("progress", help="List saved work")
     p.set_defaults(func=cmd_progress)

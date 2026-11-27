@@ -11,8 +11,8 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 | Step | What it delivers | Status |
 |---|---|---|
 | 1. Foundation | SAS connection through SASPy, local SDTMIG and controlled terminology, saved progress | Done |
-| 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | In progress |
-| 3. P21-lite checks | Small, fixable conformance checks at the end of each domain, run as SAS code | Planned |
+| 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | Done |
+| 3. P21-lite checks | Small, fixable conformance checks at the end of each domain | Done |
 | 4. More domains and a Windows app | AE, CM, EX, VS, LB and others; installer for Windows; SAS 9.4 Desktop | Planned |
 
 ## Getting started
@@ -28,7 +28,27 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
    sdtm-helper guide DM --study LORNA --chart
    ```
 
+   When the domain is finished, run the P21-lite checks (add `--dm FINAL.DM` for other domains, to check subjects and study days against DM):
+
+   ```
+   sdtm-helper check DM FINAL DM --study LORNA --autoexec path\to\libname.sas
+   sdtm-helper check AE FINAL AE --dm FINAL.DM --study LORNA --autoexec path\to\libname.sas
+   ```
+
    `guide` shows the workflow, your next step and a checklist of required and expected variables that are missing or empty. `step` ticks off a workflow step; progress is saved and picked up next time. `--chart` prints the workflow as a Mermaid flowchart.
+
+## What P21-lite checks
+
+Errors, warnings and notices, each with a suggested fix:
+
+- Required or expected variables missing; required variables empty; variables that aren't in the domain (move them to SUPP--)
+- Variable names over 8 characters, labels over 40, character lengths over 200, wrong type, labels that differ from SDTMIG, variable order
+- ISO 8601 dates and durations (partial dates allowed), DOMAIN value, controlled terminology (after `fetch-ct`)
+- One record per subject in DM, --SEQ unique within USUBJID, start after end
+- DM rules: AGEU with AGE, DTHFL only "Y", ARMNRS when ARMCD is empty
+- Against DM: every USUBJID exists in DM, --DY matches the date and RFSTDTC, no study day 0
+
+The checks read your table through SASPy and never change it. They are a quick first pass, not a replacement for Pinnacle 21.
 
 ## Where the standards come from
 
