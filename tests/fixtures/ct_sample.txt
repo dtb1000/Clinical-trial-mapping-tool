@@ -3,3 +3,4 @@ C66731		No	Sex	SEX	Sex	Sex of a subject.	CDISC SDTM Sex of Individual Terminolog
 C20197	C66731		Sex	M	Male	A male.	Male
 C16576	C66731		Sex	F	Female	A female.	Female
 C17998	C66731		Sex	U	U; Unknown	Unknown.	Unknown
+C45908	C66731		Sex	INTERSEX	Intersex	Intersex.	Intersex

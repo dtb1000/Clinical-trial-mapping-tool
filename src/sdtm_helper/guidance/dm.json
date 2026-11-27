@@ -137,7 +137,7 @@
     },
     "SEX": {
       "step": "demographics",
-      "tip": "Use the SEX codelist: M, F, U or UNDIFFERENTIATED. Recode collected words such as \"Male\" or \"woman\"."
+      "tip": "Use the SEX codelist, for example M, F, U or INTERSEX (the app's terminology check shows the full current list). Recode collected words such as \"Male\" or \"woman\"."
     },
     "RACE": {
       "step": "demographics",
