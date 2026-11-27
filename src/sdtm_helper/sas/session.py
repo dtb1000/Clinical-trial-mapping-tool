@@ -35,18 +35,26 @@ class TableInfo:
 class SasConnection:
     """Open one SAS session through SASPy and answer questions about its data."""
 
-    def __init__(self, cfgname: str = "oda", cfgfile: str | None = None, session=None):
+    def __init__(self, cfgname: str = "oda", cfgfile: str | None = None, session=None, **login):
+        """login may hold omruser/omrpw for ODA, so the app can ask for the password instead of a file."""
         if session is not None:          # used by tests
             self._sas = session
             return
         import saspy  # imported here so the rest of the app works without SAS
 
         if cfgfile is None:
-            default = Path(__file__).resolve().parents[3] / "config" / "sascfg_personal.py"
-            cfgfile = str(default) if default.exists() else None
-        self._sas = saspy.SASsession(cfgname=cfgname, cfgfile=cfgfile)
+            from ..paths import app_home
+            candidates = [Path(__file__).resolve().parents[3] / "config" / "sascfg_personal.py",
+                          app_home() / "sascfg_personal.py"]
+            cfgfile = next((str(p) for p in candidates if p.exists()), None)
+        login = {k: v for k, v in login.items() if v}
+        self._sas = saspy.SASsession(cfgname=cfgname, cfgfile=cfgfile, **login)
 
     # -- running the user's own code ---------------------------------------
+    def submit(self, code: str) -> str:
+        """Submit the user's own SAS code unchanged and return the log."""
+        return self._sas.submit(code).get("LOG", "")
+
     def run_file(self, path: str | Path) -> str:
         """Submit a SAS program the user wrote (for example their libname file). Returns the log."""
         code = Path(path).read_text(encoding="utf-8")

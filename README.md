@@ -14,7 +14,37 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 | 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | Done |
 | 3. P21-lite checks | Small, fixable conformance checks at the end of each domain | Done |
 | 4a. Guidance for all domains | Shared workflows and tips for Events, Interventions and Findings domains, plus specific tips for AE, MH, DS, CM, EX, VS and LB | Done |
-| 4b. Windows app | Desktop window, installer for Windows, SAS 9.4 Desktop | Planned |
+| 4b. Windows app | Desktop window with SAS editor and guide panel, Windows installer, SAS 9.4 on your PC | Done |
+
+## The desktop app
+
+![SDTM Helper window](docs/images/app-workflow.png)
+
+The window has your SAS program and the SAS log on the left, and the guide on the right:
+
+- **Guide**: every variable of the domain, with its Core status, format, terminology and tips. Click one to read about it.
+- **Checklist**: what is still missing or empty in the table you are building. It refreshes after each run (F5).
+- **Workflow**: the order to work in, as a chart. Click a step to tick it off; blue is what to do next.
+- **Checks**: the P21-lite report (F6), each finding with a suggested fix.
+
+Pick your study and domain at the top and type the table you are building (e.g. `FINAL.DM`). **Run** (F3) submits your program, or just the selected lines, to SAS. Your program and ticked steps are saved per study and domain (Ctrl+S, and automatically when you switch or close).
+
+### Install on Windows
+
+1. Install Java (for example Eclipse Temurin from <https://adoptium.net/>).
+2. Download `SDTM-Helper-Setup-<version>.exe` from the [Releases](https://github.com/dtb1000/Clinical-trial-mapping-tool/releases) page and run it.
+3. Open SDTM Helper, click **Settings**, choose *SAS OnDemand for Academics* (with your home region and user ID) or *SAS 9.4 installed on this PC*, and check the Java path. Optionally pick your libname program to run after connecting.
+4. Click **Connect**. For ODA the app asks for your password each time and never stores it.
+
+To run it from source instead: `pip install -e .[app]`, then `sdtm-helper-app` (or `python -m sdtm_helper.app`).
+
+### Making a release
+
+Push a tag such as `v0.2.0`. GitHub Actions runs the tests on Windows, builds the app with PyInstaller, wraps it in an Inno Setup installer and attaches it to a new release. Every pull request also builds the installer as a downloadable artifact.
+
+## Command line
+
+The same features are available as commands, which is handy for scripting.
 
 ## Getting started
 
