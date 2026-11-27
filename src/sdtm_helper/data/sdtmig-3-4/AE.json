@@ -1,0 +1,626 @@
+{
+  "name": "AE",
+  "label": "Adverse Events",
+  "class": "Events",
+  "datasetStructure": "One record per adverse event per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "AE",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SPDEVID",
+      "label": "Sponsor Device Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "4"
+    },
+    {
+      "name": "AESEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "AEGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "AEREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "AESPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "AETERM",
+      "label": "Reported Term for the Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "AEMODIFY",
+      "label": "Modified Reported Term",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "AELLT",
+      "label": "Lowest Level Term",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "11"
+    },
+    {
+      "name": "AELLTCD",
+      "label": "Lowest Level Term Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "12"
+    },
+    {
+      "name": "AEDECOD",
+      "label": "Dictionary-Derived Term",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "13"
+    },
+    {
+      "name": "AEPTCD",
+      "label": "Preferred Term Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "14"
+    },
+    {
+      "name": "AEHLT",
+      "label": "High Level Term",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "15"
+    },
+    {
+      "name": "AEHLTCD",
+      "label": "High Level Term Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "16"
+    },
+    {
+      "name": "AEHLGT",
+      "label": "High Level Group Term",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "17"
+    },
+    {
+      "name": "AEHLGTCD",
+      "label": "High Level Group Term Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "18"
+    },
+    {
+      "name": "AECAT",
+      "label": "Category for Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "AESCAT",
+      "label": "Subcategory for Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "20"
+    },
+    {
+      "name": "AEPRESP",
+      "label": "Pre-Specified Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "AEBODSYS",
+      "label": "Body System or Organ Class",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "22"
+    },
+    {
+      "name": "AEBDSYCD",
+      "label": "Body System or Organ Class Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "23"
+    },
+    {
+      "name": "AESOC",
+      "label": "Primary System Organ Class",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "24"
+    },
+    {
+      "name": "AESOCCD",
+      "label": "Primary System Organ Class Code",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "MedDRA",
+      "ordinal": "25"
+    },
+    {
+      "name": "AELOC",
+      "label": "Location of Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "26"
+    },
+    {
+      "name": "AESEV",
+      "label": "Severity/Intensity",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/AESEV"
+          }
+        ]
+      },
+      "ordinal": "27"
+    },
+    {
+      "name": "AESER",
+      "label": "Serious Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "AEACN",
+      "label": "Action Taken with Study Treatment",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ACN"
+          }
+        ]
+      },
+      "ordinal": "29"
+    },
+    {
+      "name": "AEACNOTH",
+      "label": "Other Action Taken",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "30"
+    },
+    {
+      "name": "AEACNDEV",
+      "label": "Action Taken with Device",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DEACNDEV"
+          }
+        ]
+      },
+      "ordinal": "31"
+    },
+    {
+      "name": "AEREL",
+      "label": "Causality",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "32"
+    },
+    {
+      "name": "AERLDEV",
+      "label": "Relationship of Event to Device",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "33"
+    },
+    {
+      "name": "AEPATT",
+      "label": "Pattern of Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "34"
+    },
+    {
+      "name": "AEOUT",
+      "label": "Outcome of Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/OUT"
+          }
+        ]
+      },
+      "ordinal": "35"
+    },
+    {
+      "name": "AESCAN",
+      "label": "Involves Cancer",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "36"
+    },
+    {
+      "name": "AESCONG",
+      "label": "Congenital Anomaly or Birth Defect",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "37"
+    },
+    {
+      "name": "AESDISAB",
+      "label": "Persist or Signif Disability/Incapacity",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "38"
+    },
+    {
+      "name": "AESDTH",
+      "label": "Results in Death",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "39"
+    },
+    {
+      "name": "AESHOSP",
+      "label": "Requires or Prolongs Hospitalization",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "40"
+    },
+    {
+      "name": "AESLIFE",
+      "label": "Is Life Threatening",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "41"
+    },
+    {
+      "name": "AESOD",
+      "label": "Occurred with Overdose",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "42"
+    },
+    {
+      "name": "AESMIE",
+      "label": "Other Medically Important Serious Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "43"
+    },
+    {
+      "name": "AESINTV",
+      "label": "Needs Intervention to Prevent Impairment",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "44"
+    },
+    {
+      "name": "AEUNANT",
+      "label": "Unanticipated Adverse Device Effect",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "45"
+    },
+    {
+      "name": "AECONTRT",
+      "label": "Concomitant or Additional Trtmnt Given",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "46"
+    },
+    {
+      "name": "AETOXGR",
+      "label": "Standard Toxicity Grade",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "47"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "48"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "49"
+    },
+    {
+      "name": "AESTDTC",
+      "label": "Start Date/Time of Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "50"
+    },
+    {
+      "name": "AEENDTC",
+      "label": "End Date/Time of Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "51"
+    },
+    {
+      "name": "AESTDY",
+      "label": "Study Day of Start of Adverse Event",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "52"
+    },
+    {
+      "name": "AEENDY",
+      "label": "Study Day of End of Adverse Event",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "53"
+    },
+    {
+      "name": "AEDUR",
+      "label": "Duration of Adverse Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "54"
+    },
+    {
+      "name": "AEENRF",
+      "label": "End Relative to Reference Period",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "55"
+    },
+    {
+      "name": "AEENRTPT",
+      "label": "End Relative to Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "56"
+    },
+    {
+      "name": "AEENTPT",
+      "label": "End Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "57"
+    }
+  ]
+}

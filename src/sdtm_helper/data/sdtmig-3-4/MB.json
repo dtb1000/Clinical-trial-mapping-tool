@@ -1,0 +1,507 @@
+{
+  "name": "MB",
+  "label": "Microbiology Specimen",
+  "class": "Findings",
+  "datasetStructure": "One record per microbiology specimen finding per time point per visit per subject,",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "MB",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "FOCID",
+      "label": "Focus of Study-Specific Interest",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "4"
+    },
+    {
+      "name": "MBSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "MBGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "MBREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "MBSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "MBLNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "MBLNKGRP",
+      "label": "Link Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "MBTESTCD",
+      "label": "Microbiology Test or Finding Short Name",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/MBTESTCD"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "MBTEST",
+      "label": "Microbiology Test or Finding Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/MBTEST"
+          }
+        ]
+      },
+      "ordinal": "12"
+    },
+    {
+      "name": "MBTSTDTL",
+      "label": "Measurement, Test or Examination Detail",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/MBFTSDTL"
+          }
+        ]
+      },
+      "ordinal": "13"
+    },
+    {
+      "name": "MBCAT",
+      "label": "Category",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "14"
+    },
+    {
+      "name": "MBSCAT",
+      "label": "Subcategory",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "15"
+    },
+    {
+      "name": "MBORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "16"
+    },
+    {
+      "name": "MBORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "17"
+    },
+    {
+      "name": "MBSTRESC",
+      "label": "Result or Finding in Standard Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "18"
+    },
+    {
+      "name": "MBSTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "MBSTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "MBRESCAT",
+      "label": "Result Category",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "21"
+    },
+    {
+      "name": "MBSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "MBREASND",
+      "label": "Reason Not Done",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "23"
+    },
+    {
+      "name": "MBNAM",
+      "label": "Laboratory/Vendor",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "24"
+    },
+    {
+      "name": "MBLOINC",
+      "label": "LOINC Code",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "25"
+    },
+    {
+      "name": "MBSPEC",
+      "label": "Specimen Material Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECTYPE"
+          }
+        ]
+      },
+      "ordinal": "26"
+    },
+    {
+      "name": "MBSPCCND",
+      "label": "Specimen Condition",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECCOND"
+          }
+        ]
+      },
+      "ordinal": "27"
+    },
+    {
+      "name": "MBLOC",
+      "label": "Specimen Collection Location",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "MBLAT",
+      "label": "Laterality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LAT"
+          }
+        ]
+      },
+      "ordinal": "29"
+    },
+    {
+      "name": "MBDIR",
+      "label": "Directionality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DIR"
+          }
+        ]
+      },
+      "ordinal": "30"
+    },
+    {
+      "name": "MBMETHOD",
+      "label": "Method of Test or Examination",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/METHOD"
+          }
+        ]
+      },
+      "ordinal": "31"
+    },
+    {
+      "name": "MBLOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "32"
+    },
+    {
+      "name": "MBBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "33"
+    },
+    {
+      "name": "MBFAST",
+      "label": "Fasting Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "34"
+    },
+    {
+      "name": "MBDRVFL",
+      "label": "Derived Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "35"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "36"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "37"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "38"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "39"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "40"
+    },
+    {
+      "name": "MBDTC",
+      "label": "Date/Time of Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "41"
+    },
+    {
+      "name": "MBDY",
+      "label": "Study Day of Visit/Collection/Exam",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "42"
+    },
+    {
+      "name": "MBTPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "43"
+    },
+    {
+      "name": "MBTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "44"
+    },
+    {
+      "name": "MBELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "45"
+    },
+    {
+      "name": "MBTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "46"
+    },
+    {
+      "name": "MBRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "47"
+    }
+  ]
+}

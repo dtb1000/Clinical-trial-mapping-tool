@@ -1,0 +1,386 @@
+{
+  "name": "FT",
+  "label": "Functional Tests",
+  "class": "Findings",
+  "datasetStructure": "One record per Functional Test finding per time point per visit per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "FT",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "FTSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "FTGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "FTREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "FTSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "FTTESTCD",
+      "label": "Short Name of Test",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "8"
+    },
+    {
+      "name": "FTTEST",
+      "label": "Name of Test",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "FTCAT",
+      "label": "Category",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FTCAT"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "FTSCAT",
+      "label": "Subcategory",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "FTPOS",
+      "label": "Position of Subject During Observation",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/POSITION"
+          }
+        ]
+      },
+      "ordinal": "12"
+    },
+    {
+      "name": "FTORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "13"
+    },
+    {
+      "name": "FTORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "FTSTRESC",
+      "label": "Result or Finding in Standard Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "15"
+    },
+    {
+      "name": "FTSTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "FTSTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "17"
+    },
+    {
+      "name": "FTSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "FTREASND",
+      "label": "Reason Not Done",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "FTXFN",
+      "label": "External File Path",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "20"
+    },
+    {
+      "name": "FTNAM",
+      "label": "Vendor Name",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "21"
+    },
+    {
+      "name": "FTMETHOD",
+      "label": "Method of Test or Examination",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/QRSMTHOD"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "FTLOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "FTBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "24"
+    },
+    {
+      "name": "FTDRVFL",
+      "label": "Derived Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "25"
+    },
+    {
+      "name": "FTREPNUM",
+      "label": "Repetition Number",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "26"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "27"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "28"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "29"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "30"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "31"
+    },
+    {
+      "name": "FTDTC",
+      "label": "Date/Time of Test",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "32"
+    },
+    {
+      "name": "FTDY",
+      "label": "Study Day of Test",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "33"
+    },
+    {
+      "name": "FTTPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "34"
+    },
+    {
+      "name": "FTTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "35"
+    },
+    {
+      "name": "FTELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "36"
+    },
+    {
+      "name": "FTTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "37"
+    },
+    {
+      "name": "FTRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "38"
+    }
+  ]
+}

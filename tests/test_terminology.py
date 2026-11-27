@@ -11,3 +11,9 @@ def test_parse_codelist_and_terms():
     assert sex.submission_name == "SEX"
     assert not sex.extensible
     assert sex.allows("M") and not sex.allows("MALE")
+
+
+def test_lookup_by_submission_name():
+    cls = terminology.load(FIXTURE)
+    assert terminology.by_submission_name(cls, "sex").code == "C66731"
+    assert terminology.by_submission_name(cls, "NY") is None

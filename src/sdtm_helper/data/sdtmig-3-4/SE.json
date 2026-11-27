@@ -1,0 +1,122 @@
+{
+  "name": "SE",
+  "label": "Subject Elements",
+  "class": "Special Purpose",
+  "datasetStructure": "One record per actual Element per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "SE",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SESEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "ETCD",
+      "label": "Element Code",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "ELEMENT",
+      "label": "Description of Element",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "8"
+    },
+    {
+      "name": "SESTDTC",
+      "label": "Start Date/Time of Element",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "9"
+    },
+    {
+      "name": "SEENDTC",
+      "label": "End Date/Time of Element",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "10"
+    },
+    {
+      "name": "SESTDY",
+      "label": "Study Day of Start of Element",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "SEENDY",
+      "label": "Study Day of End of Element",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "SEUPDES",
+      "label": "Description of Unplanned Element",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    }
+  ]
+}

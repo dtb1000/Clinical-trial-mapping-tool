@@ -1,0 +1,472 @@
+{
+  "name": "PR",
+  "label": "Procedures",
+  "class": "Interventions",
+  "datasetStructure": "One record per recorded procedure per occurrence per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "PR",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "PRSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "PRGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "PRSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "PRLNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "PRLNKGRP",
+      "label": "Link Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "PRTRT",
+      "label": "Reported Name of Procedure",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "PRDECOD",
+      "label": "Standardized Procedure Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PROCEDUR"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "PRCAT",
+      "label": "Category",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "PRSCAT",
+      "label": "Subcategory",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "PRPRESP",
+      "label": "Pre-specified",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "13"
+    },
+    {
+      "name": "PROCCUR",
+      "label": "Occurrence",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "PRINDC",
+      "label": "Indication",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "15"
+    },
+    {
+      "name": "PRDOSE",
+      "label": "Dose",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "PRDOSTXT",
+      "label": "Dose Description",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "17"
+    },
+    {
+      "name": "PRDOSU",
+      "label": "Dose Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "PRDOSFRM",
+      "label": "Dose Form",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FRM"
+          }
+        ]
+      },
+      "ordinal": "19"
+    },
+    {
+      "name": "PRDOSFRQ",
+      "label": "Dosing Frequency per Interval",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FREQ"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "PRDOSRGM",
+      "label": "Intended Dose Regimen",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "21"
+    },
+    {
+      "name": "PRROUTE",
+      "label": "Route of Administration",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ROUTE"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "PRLOC",
+      "label": "Location of Procedure",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "PRLAT",
+      "label": "Laterality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LAT"
+          }
+        ]
+      },
+      "ordinal": "24"
+    },
+    {
+      "name": "PRDIR",
+      "label": "Directionality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DIR"
+          }
+        ]
+      },
+      "ordinal": "25"
+    },
+    {
+      "name": "PRPORTOT",
+      "label": "Portion or Totality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PORTOT"
+          }
+        ]
+      },
+      "ordinal": "26"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "27"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "28"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "29"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "30"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "31"
+    },
+    {
+      "name": "PRSTDTC",
+      "label": "Start Date/Time of Procedure",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "32"
+    },
+    {
+      "name": "PRENDTC",
+      "label": "End Date/Time of Procedure",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "33"
+    },
+    {
+      "name": "PRSTDY",
+      "label": "Study Day of Start of Procedure",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "34"
+    },
+    {
+      "name": "PRENDY",
+      "label": "Study Day of End of Procedure",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "35"
+    },
+    {
+      "name": "PRDUR",
+      "label": "Duration of Procedure",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "36"
+    },
+    {
+      "name": "PRTPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "37"
+    },
+    {
+      "name": "PRTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "38"
+    },
+    {
+      "name": "PRELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "39"
+    },
+    {
+      "name": "PRTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "40"
+    },
+    {
+      "name": "PRRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "41"
+    },
+    {
+      "name": "PRSTRTPT",
+      "label": "Start Relative to Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "42"
+    },
+    {
+      "name": "PRSTTPT",
+      "label": "Start Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "43"
+    },
+    {
+      "name": "PRENRTPT",
+      "label": "End Relative to Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "44"
+    },
+    {
+      "name": "PRENTPT",
+      "label": "End Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "45"
+    }
+  ]
+}

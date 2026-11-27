@@ -1,0 +1,424 @@
+{
+  "name": "AG",
+  "label": "Procedure Agents",
+  "class": "Interventions",
+  "datasetStructure": "One record per recorded intervention occurrence per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "AG",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "AGSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "AGGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "AGSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "AGLNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "AGLNKGRP",
+      "label": "Link Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "AGTRT",
+      "label": "Reported Agent",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "AGMODIFY",
+      "label": "Modified Reported",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "AGDECOD",
+      "label": "Standardized Agent",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "AGCAT",
+      "label": "Category for Agent",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "AGSCAT",
+      "label": "Subcategory for Agent",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    },
+    {
+      "name": "AGPRESP",
+      "label": "AG Pre-Specified",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "AGOCCUR",
+      "label": "AG Occurrence",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "15"
+    },
+    {
+      "name": "AGSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "16"
+    },
+    {
+      "name": "AGREASND",
+      "label": "Reason Procedure Agent Not Collected",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "17"
+    },
+    {
+      "name": "AGCLAS",
+      "label": "Agent Class",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "18"
+    },
+    {
+      "name": "AGCLASCD",
+      "label": "Agent Class Code",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "AGDOSE",
+      "label": "Dose per Administration",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "20"
+    },
+    {
+      "name": "AGDOSTXT",
+      "label": "Dose Description",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "21"
+    },
+    {
+      "name": "AGDOSU",
+      "label": "Dose Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "AGDOSFRM",
+      "label": "Dose Form",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FRM"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "AGDOSFRQ",
+      "label": "Dosing Frequency per Interval",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FREQ"
+          }
+        ]
+      },
+      "ordinal": "24"
+    },
+    {
+      "name": "AGROUTE",
+      "label": "Route of Administration",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ROUTE"
+          }
+        ]
+      },
+      "ordinal": "25"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "26"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "27"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "28"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "29"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "30"
+    },
+    {
+      "name": "AGSTDTC",
+      "label": "Start Date/Time of Agent",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "31"
+    },
+    {
+      "name": "AGENDTC",
+      "label": "End Date/Time of Agent",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "32"
+    },
+    {
+      "name": "AGSTDY",
+      "label": "Study Day of Start of Agent",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "33"
+    },
+    {
+      "name": "AGENDY",
+      "label": "Study Day of End of Agent",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "34"
+    },
+    {
+      "name": "AGDUR",
+      "label": "Duration of Agent",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "35"
+    },
+    {
+      "name": "AGSTRF",
+      "label": "Start Relative to Reference Period",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "36"
+    },
+    {
+      "name": "AGENRF",
+      "label": "End Relative to Reference Period",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "37"
+    },
+    {
+      "name": "AGSTRTPT",
+      "label": "Start Relative to Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "38"
+    },
+    {
+      "name": "AGSTTPT",
+      "label": "Start Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "39"
+    },
+    {
+      "name": "AGENRTPT",
+      "label": "End Relative to Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/STENRF"
+          }
+        ]
+      },
+      "ordinal": "40"
+    },
+    {
+      "name": "AGENTPT",
+      "label": "End Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "41"
+    }
+  ]
+}

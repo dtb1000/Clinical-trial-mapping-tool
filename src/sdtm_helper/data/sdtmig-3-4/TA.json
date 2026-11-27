@@ -1,0 +1,96 @@
+{
+  "name": "TA",
+  "label": "Trial Arms",
+  "class": "Trial Design",
+  "datasetStructure": "One record per planned Element per Arm",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TA",
+      "ordinal": "2"
+    },
+    {
+      "name": "ARMCD",
+      "label": "Planned Arm Code",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "ARM",
+      "label": "Description of Planned Arm",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "ETCD",
+      "label": "Element Code",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "6"
+    },
+    {
+      "name": "ELEMENT",
+      "label": "Description of Element",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "TABRANCH",
+      "label": "Branch",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Exp",
+      "ordinal": "8"
+    },
+    {
+      "name": "TATRANS",
+      "label": "Transition Rule",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Exp",
+      "ordinal": "9"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "10"
+    }
+  ]
+}

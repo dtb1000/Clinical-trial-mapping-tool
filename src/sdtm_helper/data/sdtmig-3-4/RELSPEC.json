@@ -1,0 +1,66 @@
+{
+  "name": "RELSPEC",
+  "label": "Related Specimens",
+  "class": "Relationship",
+  "datasetStructure": "One record per specimen identifier per subject,",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "2"
+    },
+    {
+      "name": "REFID",
+      "label": "Specimen ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SPEC",
+      "label": "Specimen Type",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECTYPE"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/GENSMP"
+          }
+        ]
+      },
+      "ordinal": "4"
+    },
+    {
+      "name": "PARENT",
+      "label": "Specimen Parent",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Exp",
+      "ordinal": "5"
+    },
+    {
+      "name": "LEVEL",
+      "label": "Specimen Level",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Req",
+      "ordinal": "6"
+    }
+  ]
+}

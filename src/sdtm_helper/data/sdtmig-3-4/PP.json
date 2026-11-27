@@ -1,0 +1,301 @@
+{
+  "name": "PP",
+  "label": "Pharmacokinetics Parameters",
+  "class": "Findings",
+  "datasetStructure": "One record per PK parameter per time-concentration profile per modeling method per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "PP",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "PPSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "PPGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "PPTESTCD",
+      "label": "Parameter Short Name",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKPARMCD"
+          }
+        ]
+      },
+      "ordinal": "6"
+    },
+    {
+      "name": "PPTEST",
+      "label": "Parameter Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKPARM"
+          }
+        ]
+      },
+      "ordinal": "7"
+    },
+    {
+      "name": "PPCAT",
+      "label": "Parameter Category",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Exp",
+      "ordinal": "8"
+    },
+    {
+      "name": "PPSCAT",
+      "label": "Parameter Subcategory",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "PPORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "10"
+    },
+    {
+      "name": "PPORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUNIT"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUWG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUWKG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUDMG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUDUG"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "PPSTRESC",
+      "label": "Character Result/Finding in Std",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "12"
+    },
+    {
+      "name": "PPSTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "13"
+    },
+    {
+      "name": "PPSTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUNIT"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUWG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUWKG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUDMG"
+          },
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKUDUG"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "PPSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "15"
+    },
+    {
+      "name": "PPREASND",
+      "label": "Reason Parameter Not Calculated",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "PPSPEC",
+      "label": "Specimen Material Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECTYPE"
+          }
+        ]
+      },
+      "ordinal": "17"
+    },
+    {
+      "name": "PPANMETH",
+      "label": "Analysis Method",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PKANMET"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "PPDTC",
+      "label": "Date/Time of Parameter Calculations",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "21"
+    },
+    {
+      "name": "PPDY",
+      "label": "Study Day of Parameter Calculations",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "22"
+    },
+    {
+      "name": "PPTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "23"
+    },
+    {
+      "name": "PPRFTDTC",
+      "label": "Date/Time of Reference Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "24"
+    },
+    {
+      "name": "PPSTINT",
+      "label": "Planned Start of Assessment Interval",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "25"
+    },
+    {
+      "name": "PPENINT",
+      "label": "Planned End of Assessment Interval",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "26"
+    }
+  ]
+}

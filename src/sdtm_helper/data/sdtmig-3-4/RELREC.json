@@ -1,0 +1,78 @@
+{
+  "name": "RELREC",
+  "label": "Related Records",
+  "class": "Relationship",
+  "datasetStructure": "One record per related record, group of records or",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "RDOMAIN",
+      "label": "Related Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DOMAIN"
+          }
+        ]
+      },
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Exp",
+      "ordinal": "3"
+    },
+    {
+      "name": "IDVAR",
+      "label": "Identifying Variable",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "IDVARVAL",
+      "label": "Identifying Variable Value",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Exp",
+      "ordinal": "5"
+    },
+    {
+      "name": "RELTYPE",
+      "label": "Relationship Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RELTYPE"
+          }
+        ]
+      },
+      "ordinal": "6"
+    },
+    {
+      "name": "RELID",
+      "label": "Relationship Identifier",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "7"
+    }
+  ]
+}

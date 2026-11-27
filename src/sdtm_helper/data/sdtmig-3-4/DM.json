@@ -1,0 +1,318 @@
+{
+  "name": "DM",
+  "label": "Demographics",
+  "class": "Special Purpose",
+  "datasetStructure": "One record per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "DM",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SUBJID",
+      "label": "Subject Identifier for the Study",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "RFSTDTC",
+      "label": "Subject Reference Start Date/Time",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "5"
+    },
+    {
+      "name": "RFENDTC",
+      "label": "Subject Reference End Date/Time",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "6"
+    },
+    {
+      "name": "RFXSTDTC",
+      "label": "Date/Time of First Study Treatment",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "7"
+    },
+    {
+      "name": "RFXENDTC",
+      "label": "Date/Time of Last Study Treatment",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "8"
+    },
+    {
+      "name": "RFCSTDTC",
+      "label": "Date/Time of First Challenge Agent Admin",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "9"
+    },
+    {
+      "name": "RFCENDTC",
+      "label": "Date/Time of Last Challenge Agent Admin",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "10"
+    },
+    {
+      "name": "RFICDTC",
+      "label": "Date/Time of Informed Consent",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "11"
+    },
+    {
+      "name": "RFPENDTC",
+      "label": "Date/Time of End of Participation",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "12"
+    },
+    {
+      "name": "DTHDTC",
+      "label": "Date/Time of Death",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "13"
+    },
+    {
+      "name": "DTHFL",
+      "label": "Subject Death Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "SITEID",
+      "label": "Study Site Identifier",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "15"
+    },
+    {
+      "name": "INVID",
+      "label": "Investigator Identifier",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "INVNAM",
+      "label": "Investigator Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "17"
+    },
+    {
+      "name": "BRTHDTC",
+      "label": "Date/Time of Birth",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "18"
+    },
+    {
+      "name": "AGE",
+      "label": "Age",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "19"
+    },
+    {
+      "name": "AGEU",
+      "label": "Age Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/AGEU"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "SEX",
+      "label": "Sex",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SEX"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "RACE",
+      "label": "Race",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RACE"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "ETHNIC",
+      "label": "Ethnicity",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ETHNIC"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "ARMCD",
+      "label": "Planned Arm Code",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "24"
+    },
+    {
+      "name": "ARM",
+      "label": "Description of Planned Arm",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Exp",
+      "ordinal": "25"
+    },
+    {
+      "name": "ACTARMCD",
+      "label": "Actual Arm Code",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "26"
+    },
+    {
+      "name": "ACTARM",
+      "label": "Description of Actual Arm",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Exp",
+      "ordinal": "27"
+    },
+    {
+      "name": "ARMNRS",
+      "label": "Reason Arm and/or Actual Arm is Null",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ARMNULRS"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "ACTARMUD",
+      "label": "Description of Unplanned Actual Arm",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "29"
+    },
+    {
+      "name": "COUNTRY",
+      "label": "Country",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "30"
+    },
+    {
+      "name": "DMDTC",
+      "label": "Date/Time of Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "31"
+    },
+    {
+      "name": "DMDY",
+      "label": "Study Day of Collection",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "32"
+    }
+  ]
+}

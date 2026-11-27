@@ -1,0 +1,313 @@
+{
+  "name": "PE",
+  "label": "Physical Examination",
+  "class": "Findings",
+  "datasetStructure": "One record per body system or abnormality per visit per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "PE",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "PESEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "PEGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "PESPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "PETESTCD",
+      "label": "Body System Examined Short",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "7"
+    },
+    {
+      "name": "PETEST",
+      "label": "Body System Examined",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "8"
+    },
+    {
+      "name": "PEMODIFY",
+      "label": "Modified Reported Term",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "PECAT",
+      "label": "Category for Examination",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "PESCAT",
+      "label": "Subcategory for Examination",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "PEBODSYS",
+      "label": "Body System or Organ Class",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "PEORRES",
+      "label": "Verbatim Examination Finding",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "13"
+    },
+    {
+      "name": "PEORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "PESTRESC",
+      "label": "Character Result/Finding in Std Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "15"
+    },
+    {
+      "name": "PESTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "16"
+    },
+    {
+      "name": "PEREASND",
+      "label": "Reason Not Examined",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "17"
+    },
+    {
+      "name": "PELOC",
+      "label": "Location of Physical Exam Finding",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "PELAT",
+      "label": "Laterality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LAT"
+          }
+        ]
+      },
+      "ordinal": "19"
+    },
+    {
+      "name": "PEMETHOD",
+      "label": "Method of Test or Examination",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/METHOD"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "PELOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "PEBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "PEEVAL",
+      "label": "Evaluator",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EVAL"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "24"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "25"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "26"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "27"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "PEDTC",
+      "label": "Date/Time of Examination",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "29"
+    },
+    {
+      "name": "PEDY",
+      "label": "Study Day of Examination",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "30"
+    }
+  ]
+}

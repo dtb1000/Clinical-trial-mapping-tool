@@ -1,0 +1,364 @@
+{
+  "name": "RP",
+  "label": "Reproductive System Findings",
+  "class": "Findings",
+  "datasetStructure": "One record per finding or result per time point per visit per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "RP",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "RPSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "RPGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "RPREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "RPSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "RPLNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "RPLNKGRP",
+      "label": "Link Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "RPTESTCD",
+      "label": "Short Name of Reproductive Test",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RPTESTCD"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "RPTEST",
+      "label": "Name of Reproductive Test",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RPTEST"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "RPCAT",
+      "label": "Category for Reproductive Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "RPSCAT",
+      "label": "Subcategory for Reproductive Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    },
+    {
+      "name": "RPORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "14"
+    },
+    {
+      "name": "RPORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "15"
+    },
+    {
+      "name": "RPSTRESC",
+      "label": "Character Result/Finding in Std Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "16"
+    },
+    {
+      "name": "RPSTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Perm",
+      "ordinal": "17"
+    },
+    {
+      "name": "RPSTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "RPSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "19"
+    },
+    {
+      "name": "RPREASND",
+      "label": "Reason Not Done",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "20"
+    },
+    {
+      "name": "RPLOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "RPBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "22"
+    },
+    {
+      "name": "RPDRVFL",
+      "label": "Derived Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "24"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "25"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "26"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "27"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "RPDTC",
+      "label": "Date/Time of Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "29"
+    },
+    {
+      "name": "RPDY",
+      "label": "Study Day of Visit/Collection/Exam",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "30"
+    },
+    {
+      "name": "RPDUR",
+      "label": "Duration",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "31"
+    },
+    {
+      "name": "RPTPT",
+      "label": "Planned Time Point Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "32"
+    },
+    {
+      "name": "RPTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "33"
+    },
+    {
+      "name": "RPELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "34"
+    },
+    {
+      "name": "RPTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "35"
+    },
+    {
+      "name": "RPRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "36"
+    }
+  ]
+}

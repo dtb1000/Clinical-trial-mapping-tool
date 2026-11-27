@@ -1,0 +1,55 @@
+{
+  "name": "RELSUB",
+  "label": "Related Subjects",
+  "class": "Relationship",
+  "datasetStructure": "One record per relationship per related subject per",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Exp",
+      "ordinal": "2"
+    },
+    {
+      "name": "POOLID",
+      "label": "Pool Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "3"
+    },
+    {
+      "name": "RSUBJID",
+      "label": "Related Subject or Pool Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "SREL",
+      "label": "Subject Relationship",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RELSUB"
+          }
+        ]
+      },
+      "ordinal": "5"
+    }
+  ]
+}

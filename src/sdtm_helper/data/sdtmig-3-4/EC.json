@@ -1,0 +1,472 @@
+{
+  "name": "EC",
+  "label": "Exposure as Collected",
+  "class": "Interventions",
+  "datasetStructure": "One record per protocol-specified study treatment, collected-dosing interval, per",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "EC",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "ECSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "ECGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "ECREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "ECSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "ECLNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "ECLNKGRP",
+      "label": "Link Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "ECTRT",
+      "label": "Name of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "10"
+    },
+    {
+      "name": "ECMOOD",
+      "label": "Mood",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/BRDGMOOD"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "ECCAT",
+      "label": "Category of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "ECSCAT",
+      "label": "Subcategory of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    },
+    {
+      "name": "ECPRESP",
+      "label": "Pre-Specified",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "ECOCCUR",
+      "label": "Occurrence",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "15"
+    },
+    {
+      "name": "ECREASOC",
+      "label": "Reason for Occur Value",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "ECDOSE",
+      "label": "Dose",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "17"
+    },
+    {
+      "name": "ECDOSTXT",
+      "label": "Dose Description",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "18"
+    },
+    {
+      "name": "ECDOSU",
+      "label": "Dose Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "19"
+    },
+    {
+      "name": "ECDOSFRM",
+      "label": "Dose Form",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FRM"
+          }
+        ]
+      },
+      "ordinal": "20"
+    },
+    {
+      "name": "ECDOSFRQ",
+      "label": "Dosing Frequency per Interval",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/FREQ"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "ECDOSTOT",
+      "label": "Total Daily Dose",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "22"
+    },
+    {
+      "name": "ECDOSRGM",
+      "label": "Intended Dose Regimen",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "23"
+    },
+    {
+      "name": "ECROUTE",
+      "label": "Route of Administration",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ROUTE"
+          }
+        ]
+      },
+      "ordinal": "24"
+    },
+    {
+      "name": "ECLOT",
+      "label": "Lot Number",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "25"
+    },
+    {
+      "name": "ECLOC",
+      "label": "Location of Dose Administration",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "26"
+    },
+    {
+      "name": "ECLAT",
+      "label": "Laterality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LAT"
+          }
+        ]
+      },
+      "ordinal": "27"
+    },
+    {
+      "name": "ECDIR",
+      "label": "Directionality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DIR"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "ECPORTOT",
+      "label": "Portion or Totality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/PORTOT"
+          }
+        ]
+      },
+      "ordinal": "29"
+    },
+    {
+      "name": "ECFAST",
+      "label": "Fasting Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "30"
+    },
+    {
+      "name": "ECPSTRG",
+      "label": "Pharmaceutical Strength",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "31"
+    },
+    {
+      "name": "ECPSTRGU",
+      "label": "Pharmaceutical Strength Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "32"
+    },
+    {
+      "name": "ECADJ",
+      "label": "Reason for Dose Adjustment",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "33"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "34"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "35"
+    },
+    {
+      "name": "ECSTDTC",
+      "label": "Start Date/Time of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "36"
+    },
+    {
+      "name": "ECENDTC",
+      "label": "End Date/Time of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "37"
+    },
+    {
+      "name": "ECSTDY",
+      "label": "Study Day of Start of Treatment",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "38"
+    },
+    {
+      "name": "ECENDY",
+      "label": "Study Day of End of Treatment",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "39"
+    },
+    {
+      "name": "ECDUR",
+      "label": "Duration of Treatment",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "40"
+    },
+    {
+      "name": "ECTPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "41"
+    },
+    {
+      "name": "ECTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "42"
+    },
+    {
+      "name": "ECELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "43"
+    },
+    {
+      "name": "ECTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "44"
+    },
+    {
+      "name": "ECRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "45"
+    }
+  ]
+}

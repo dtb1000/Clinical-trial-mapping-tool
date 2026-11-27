@@ -1,0 +1,500 @@
+{
+  "name": "RE",
+  "label": "Respiratory System Findings",
+  "class": "Findings",
+  "datasetStructure": "One record per finding or result per time point per visit per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "RE",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SPDEVID",
+      "label": "Sponsor Device Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "4"
+    },
+    {
+      "name": "RESEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "REGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "REREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "RESPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "RELNKID",
+      "label": "Link ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "RELNKGRP",
+      "label": "Link Group",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "RETESTCD",
+      "label": "Short Name of Respiratory Test",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RETESTCD"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "RETEST",
+      "label": "Name of Respiratory Test",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RETEST"
+          }
+        ]
+      },
+      "ordinal": "12"
+    },
+    {
+      "name": "RECAT",
+      "label": "Category for Respiratory Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    },
+    {
+      "name": "RESCAT",
+      "label": "Subcategory for Respiratory Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "14"
+    },
+    {
+      "name": "REPOS",
+      "label": "Position of Subject During Observation",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/POSITION"
+          }
+        ]
+      },
+      "ordinal": "15"
+    },
+    {
+      "name": "REORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "16"
+    },
+    {
+      "name": "REORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "17"
+    },
+    {
+      "name": "REORREF",
+      "label": "Reference Result in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "18"
+    },
+    {
+      "name": "RESTRESC",
+      "label": "Character Result/Finding in Std Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "19"
+    },
+    {
+      "name": "RESTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Perm",
+      "ordinal": "20"
+    },
+    {
+      "name": "RESTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "21"
+    },
+    {
+      "name": "RESTREFC",
+      "label": "Character Reference Result",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "22"
+    },
+    {
+      "name": "RESTREFN",
+      "label": "Numeric Reference Result in Std Units",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "23"
+    },
+    {
+      "name": "RESTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "24"
+    },
+    {
+      "name": "REREASND",
+      "label": "Reason Not Done",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "25"
+    },
+    {
+      "name": "RELOC",
+      "label": "Location Used for the Measurement",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "26"
+    },
+    {
+      "name": "RELAT",
+      "label": "Laterality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LAT"
+          }
+        ]
+      },
+      "ordinal": "27"
+    },
+    {
+      "name": "REDIR",
+      "label": "Directionality",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DIR"
+          }
+        ]
+      },
+      "ordinal": "28"
+    },
+    {
+      "name": "REMETHOD",
+      "label": "Method of Test or Examination",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/METHOD"
+          }
+        ]
+      },
+      "ordinal": "29"
+    },
+    {
+      "name": "RELOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "30"
+    },
+    {
+      "name": "REBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "31"
+    },
+    {
+      "name": "REDRVFL",
+      "label": "Derived Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "32"
+    },
+    {
+      "name": "REEVAL",
+      "label": "Evaluator",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EVAL"
+          }
+        ]
+      },
+      "ordinal": "33"
+    },
+    {
+      "name": "REEVALID",
+      "label": "Evaluator Identifier",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/MEDEVAL"
+          }
+        ]
+      },
+      "ordinal": "34"
+    },
+    {
+      "name": "REREPNUM",
+      "label": "Repetition Number",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "35"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "36"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "37"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "38"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "39"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "40"
+    },
+    {
+      "name": "REDTC",
+      "label": "Date/Time of Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "41"
+    },
+    {
+      "name": "REDY",
+      "label": "Study Day of Visit/Collection/Exam",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "42"
+    },
+    {
+      "name": "RETPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "43"
+    },
+    {
+      "name": "RETPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "44"
+    },
+    {
+      "name": "REELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "45"
+    },
+    {
+      "name": "RETPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "46"
+    },
+    {
+      "name": "RERFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "47"
+    }
+  ]
+}

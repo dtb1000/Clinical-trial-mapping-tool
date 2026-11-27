@@ -1,0 +1,227 @@
+{
+  "name": "BE",
+  "label": "Biospecimen Events",
+  "class": "Events",
+  "datasetStructure": "One record per instance per biospecimen event per biospecimen identifier per subject,",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "BE",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SPDEVID",
+      "label": "Sponsor Device Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "4"
+    },
+    {
+      "name": "BESEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "BEGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "BEREFID",
+      "label": "Reference ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Exp",
+      "ordinal": "7"
+    },
+    {
+      "name": "BESPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "BETERM",
+      "label": "Reported Term for the Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "BEMODIFY",
+      "label": "Modified Reported Term",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "10"
+    },
+    {
+      "name": "BEDECOD",
+      "label": "Dictionary-Derived Term",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/BEDECOD"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "BECAT",
+      "label": "Category for Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "12"
+    },
+    {
+      "name": "BESCAT",
+      "label": "Subcategory for Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "13"
+    },
+    {
+      "name": "BELOC",
+      "label": "Anatomical Location of Event",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LOC"
+          }
+        ]
+      },
+      "ordinal": "14"
+    },
+    {
+      "name": "BEPARTY",
+      "label": "Accountable Party",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "15"
+    },
+    {
+      "name": "BEPRTYID",
+      "label": "Identification of Accountable Party",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "16"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "17"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "18"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "19"
+    },
+    {
+      "name": "BEDTC",
+      "label": "Date/Time of Specimen Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "20"
+    },
+    {
+      "name": "BESTDTC",
+      "label": "Start Date/Time of Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "21"
+    },
+    {
+      "name": "BEENDTC",
+      "label": "End Date/Time of Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "22"
+    },
+    {
+      "name": "BESTDY",
+      "label": "Study Day of Start of Biospecimen Event",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "23"
+    },
+    {
+      "name": "BEENDY",
+      "label": "Study Day of End of Biospecimen Event",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "24"
+    },
+    {
+      "name": "BEDUR",
+      "label": "Duration of Biospecimen Event",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "25"
+    }
+  ]
+}

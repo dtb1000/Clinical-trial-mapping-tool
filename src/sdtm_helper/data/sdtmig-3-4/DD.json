@@ -1,0 +1,127 @@
+{
+  "name": "DD",
+  "label": "Death Details",
+  "class": "Findings",
+  "datasetStructure": "One record per finding per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "DD",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "DDSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "DDTESTCD",
+      "label": "Death Detail Assessment Short",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DTHDXCD"
+          }
+        ]
+      },
+      "ordinal": "5"
+    },
+    {
+      "name": "DDTEST",
+      "label": "Death Detail Assessment Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DTHDX"
+          }
+        ]
+      },
+      "ordinal": "6"
+    },
+    {
+      "name": "DDORRES",
+      "label": "Result or Finding as Collected",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "7"
+    },
+    {
+      "name": "DDSTRESC",
+      "label": "Character Result/Finding in Std Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "8"
+    },
+    {
+      "name": "DDRESCAT",
+      "label": "Result Category",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "9"
+    },
+    {
+      "name": "DDEVAL",
+      "label": "Evaluator",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EVAL"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "DDDTC",
+      "label": "Date/Time of Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "11"
+    },
+    {
+      "name": "DDDY",
+      "label": "Study Day of Collection",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "12"
+    }
+  ]
+}

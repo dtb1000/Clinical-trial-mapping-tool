@@ -2,45 +2,207 @@
   "domain": "DM",
   "summary": "One record per subject. DM is usually mapped after EX and DS, because several reference dates come from exposure and disposition data. Every other domain takes USUBJID, and the study day reference RFSTDTC, from DM.",
   "workflow": [
-    {"id": "load", "title": "Load the data", "detail": "Run your libname program and import the raw tables you need: subject list, demographics, exposure dates, informed consent and disposition dates.", "after": []},
-    {"id": "inspect", "title": "Inspect the raw data", "detail": "Check for one row per subject, look at the distinct values of sex, race and ethnicity, and note any dates that are partial or in mixed formats.", "after": ["load"]},
-    {"id": "identifiers", "title": "Identifiers", "detail": "STUDYID, DOMAIN, SUBJID, SITEID and USUBJID. These need no derivation beyond joining pieces together.", "after": ["inspect"]},
-    {"id": "demographics", "title": "Demographic values", "detail": "AGE, AGEU, SEX, RACE, ETHNIC, COUNTRY and BRTHDTC if collected. Recode collected values to controlled terminology.", "after": ["identifiers"]},
-    {"id": "arms", "title": "Planned and actual arm", "detail": "ARMCD, ARM, ACTARMCD, ACTARM, and ARMNRS or ACTARMUD for subjects without an arm. Codes and names must match TA.", "after": ["identifiers"]},
-    {"id": "dates", "title": "Reference dates (derived)", "detail": "RFICDTC, RFSTDTC, RFENDTC, RFXSTDTC, RFXENDTC, RFPENDTC, DTHDTC and DTHFL. These need EX and DS to be mapped first.", "after": ["demographics", "arms"]},
-    {"id": "structure", "title": "Order, labels and lengths", "detail": "Keep only DM variables in SDTMIG order with the standard labels. Move any extra collected variables to SUPPDM.", "after": ["dates"]},
-    {"id": "check", "title": "Run the P21-lite checks", "detail": "Fix what the checks report before exporting.", "after": ["structure"]},
-    {"id": "export", "title": "Export to XPT", "detail": "Write a SAS transport file (version 5) named dm.xpt with the dataset name DM.", "after": ["check"]}
+    {
+      "id": "load",
+      "title": "Load the data",
+      "detail": "Run your libname program and import the raw tables you need: subject list, demographics, exposure dates, informed consent and disposition dates.",
+      "after": []
+    },
+    {
+      "id": "inspect",
+      "title": "Inspect the raw data",
+      "detail": "Check for one row per subject, look at the distinct values of sex, race and ethnicity, and note any dates that are partial or in mixed formats.",
+      "after": [
+        "load"
+      ]
+    },
+    {
+      "id": "identifiers",
+      "title": "Identifiers",
+      "detail": "STUDYID, DOMAIN, SUBJID, SITEID and USUBJID. These need no derivation beyond joining pieces together.",
+      "after": [
+        "inspect"
+      ]
+    },
+    {
+      "id": "demographics",
+      "title": "Demographic values",
+      "detail": "AGE, AGEU, SEX, RACE, ETHNIC, COUNTRY and BRTHDTC if collected. Recode collected values to controlled terminology.",
+      "after": [
+        "identifiers"
+      ]
+    },
+    {
+      "id": "arms",
+      "title": "Planned and actual arm",
+      "detail": "ARMCD, ARM, ACTARMCD, ACTARM, and ARMNRS or ACTARMUD for subjects without an arm. Codes and names must match TA.",
+      "after": [
+        "identifiers"
+      ]
+    },
+    {
+      "id": "dates",
+      "title": "Reference dates (derived)",
+      "detail": "RFICDTC, RFSTDTC, RFENDTC, RFXSTDTC, RFXENDTC, RFPENDTC, DTHDTC and DTHFL. These need EX and DS to be mapped first.",
+      "after": [
+        "demographics",
+        "arms"
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Order, labels and lengths",
+      "detail": "Keep only DM variables in SDTMIG order with the standard labels. Move any extra collected variables to SUPPDM.",
+      "after": [
+        "dates"
+      ]
+    },
+    {
+      "id": "check",
+      "title": "Run the P21-lite checks",
+      "detail": "Fix what the checks report before exporting.",
+      "after": [
+        "structure"
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Export to XPT",
+      "detail": "Write a SAS transport file (version 5) named dm.xpt with the dataset name DM.",
+      "after": [
+        "check"
+      ]
+    }
   ],
   "variables": {
-    "STUDYID": {"step": "identifiers", "tip": "The same constant study identifier in every domain."},
-    "DOMAIN": {"step": "identifiers", "tip": "Always the constant \"DM\"."},
-    "USUBJID": {"step": "identifiers", "tip": "Must be unique for each subject across the whole submission and identical in every domain. A common pattern is STUDYID-SITEID-SUBJID, but any rule works as long as it is applied the same way everywhere."},
-    "SUBJID": {"step": "identifiers", "tip": "The subject identifier as it appears on the CRF."},
-    "SITEID": {"step": "identifiers", "tip": "The site identifier as collected."},
-    "RFSTDTC": {"step": "dates", "tip": "The sponsor-defined reference start date, used to calculate study days (--DY) in every other domain. In most trials it is the date of first study treatment, so it usually equals RFXSTDTC. Leave it empty for subjects never treated, such as screen failures. Write down the rule you chose: reviewers will ask."},
-    "RFENDTC": {"step": "dates", "tip": "The sponsor-defined reference end date, often the date of last treatment or the end of the subject's participation. Use the same rule for every subject."},
-    "RFXSTDTC": {"step": "dates", "tip": "Date of first exposure to study treatment: the earliest EXSTDTC for the subject in EX."},
-    "RFXENDTC": {"step": "dates", "tip": "Date of last exposure to study treatment: the latest EXENDTC for the subject in EX (use EXSTDTC where the end is missing, if that fits the dosing)."},
-    "RFICDTC": {"step": "dates", "tip": "Date of informed consent, normally the same date as the informed consent record in DS."},
-    "RFPENDTC": {"step": "dates", "tip": "End of the subject's participation: the last date of any contact, often the final disposition date in DS. It should be on or after every other date for the subject."},
-    "DTHDTC": {"step": "dates", "tip": "Date of death, if the subject died. Leave empty otherwise."},
-    "DTHFL": {"step": "dates", "tip": "\"Y\" if the subject died, otherwise empty (never \"N\")."},
-    "AGE": {"step": "demographics", "tip": "Age at a sponsor-defined point, usually informed consent or randomisation. If you derive it from BRTHDTC, use completed years."},
-    "AGEU": {"step": "demographics", "tip": "Units for AGE, normally \"YEARS\". Leave empty when AGE is missing."},
-    "SEX": {"step": "demographics", "tip": "Use the SEX codelist: M, F, U or UNDIFFERENTIATED. Recode collected words such as \"Male\" or \"woman\"."},
-    "RACE": {"step": "demographics", "tip": "Use the RACE codelist, in upper case. If a subject reports more than one race, set RACE to \"MULTIPLE\" and put each race in SUPPDM (RACE1, RACE2 and so on)."},
-    "ETHNIC": {"step": "demographics", "tip": "Use the ETHNIC codelist, for example \"NOT HISPANIC OR LATINO\"."},
-    "BRTHDTC": {"step": "demographics", "tip": "Date of birth in ISO 8601, only if collected. Partial dates such as \"1975\" are fine."},
-    "ARMCD": {"step": "arms", "tip": "Planned arm code, matching ARMCD in TA. Leave empty for subjects not assigned to an arm, and say why in ARMNRS."},
-    "ARM": {"step": "arms", "tip": "Planned arm name, matching ARM in TA exactly."},
-    "ACTARMCD": {"step": "arms", "tip": "Code of the arm the subject actually received. Usually the same as ARMCD, unless the subject got the wrong treatment."},
-    "ACTARM": {"step": "arms", "tip": "Name of the arm the subject actually received."},
-    "ARMNRS": {"step": "arms", "tip": "Reason the arm is empty, for example \"SCREEN FAILURE\" or \"ASSIGNED, NOT TREATED\". Only filled when ARMCD and ACTARMCD are empty."},
-    "ACTARMUD": {"step": "arms", "tip": "Description of the actual treatment when it does not match any planned arm."},
-    "COUNTRY": {"step": "demographics", "tip": "Three-letter ISO 3166-1 alpha-3 country code of the site, for example \"USA\" or \"POL\"."},
-    "DMDTC": {"step": "dates", "tip": "Date the demographic data were collected, in ISO 8601."},
-    "DMDY": {"step": "dates", "tip": "Study day of DMDTC relative to RFSTDTC. There is no day 0: the day before RFSTDTC is day -1."}
+    "STUDYID": {
+      "step": "identifiers",
+      "tip": "The same constant study identifier in every domain."
+    },
+    "DOMAIN": {
+      "step": "identifiers",
+      "tip": "Always the constant \"DM\"."
+    },
+    "USUBJID": {
+      "step": "identifiers",
+      "tip": "Must be unique for each subject across the whole submission and identical in every domain. A common pattern is STUDYID-SITEID-SUBJID, but any rule works as long as it is applied the same way everywhere."
+    },
+    "SUBJID": {
+      "step": "identifiers",
+      "tip": "The subject identifier as it appears on the CRF."
+    },
+    "SITEID": {
+      "step": "identifiers",
+      "tip": "The site identifier as collected."
+    },
+    "RFSTDTC": {
+      "step": "dates",
+      "tip": "The sponsor-defined reference start date, used to calculate study days (--DY) in every other domain. In most trials it is the date of first study treatment, so it usually equals RFXSTDTC. Leave it empty for subjects never treated, such as screen failures. Write down the rule you chose: reviewers will ask."
+    },
+    "RFENDTC": {
+      "step": "dates",
+      "tip": "The sponsor-defined reference end date, often the date of last treatment or the end of the subject's participation. Use the same rule for every subject."
+    },
+    "RFXSTDTC": {
+      "step": "dates",
+      "tip": "Date of first exposure to study treatment: the earliest EXSTDTC for the subject in EX."
+    },
+    "RFXENDTC": {
+      "step": "dates",
+      "tip": "Date of last exposure to study treatment: the latest EXENDTC for the subject in EX (use EXSTDTC where the end is missing, if that fits the dosing)."
+    },
+    "RFICDTC": {
+      "step": "dates",
+      "tip": "Date of informed consent, normally the same date as the informed consent record in DS."
+    },
+    "RFPENDTC": {
+      "step": "dates",
+      "tip": "End of the subject's participation: the last date of any contact, often the final disposition date in DS. It should be on or after every other date for the subject."
+    },
+    "DTHDTC": {
+      "step": "dates",
+      "tip": "Date of death, if the subject died. Leave empty otherwise."
+    },
+    "DTHFL": {
+      "step": "dates",
+      "tip": "\"Y\" if the subject died, otherwise empty (never \"N\")."
+    },
+    "AGE": {
+      "step": "demographics",
+      "tip": "Age at a sponsor-defined point, usually informed consent or randomisation. If you derive it from BRTHDTC, use completed years."
+    },
+    "AGEU": {
+      "step": "demographics",
+      "tip": "Units for AGE, normally \"YEARS\". Leave empty when AGE is missing."
+    },
+    "SEX": {
+      "step": "demographics",
+      "tip": "Use the SEX codelist: M, F, U or UNDIFFERENTIATED. Recode collected words such as \"Male\" or \"woman\"."
+    },
+    "RACE": {
+      "step": "demographics",
+      "tip": "Use the RACE codelist, in upper case. If a subject reports more than one race, set RACE to \"MULTIPLE\" and put each race in SUPPDM (RACE1, RACE2 and so on)."
+    },
+    "ETHNIC": {
+      "step": "demographics",
+      "tip": "Use the ETHNIC codelist, for example \"NOT HISPANIC OR LATINO\"."
+    },
+    "BRTHDTC": {
+      "step": "demographics",
+      "tip": "Date of birth in ISO 8601, only if collected. Partial dates such as \"1975\" are fine."
+    },
+    "ARMCD": {
+      "step": "arms",
+      "tip": "Planned arm code, matching ARMCD in TA. Leave empty for subjects not assigned to an arm, and say why in ARMNRS."
+    },
+    "ARM": {
+      "step": "arms",
+      "tip": "Planned arm name, matching ARM in TA exactly."
+    },
+    "ACTARMCD": {
+      "step": "arms",
+      "tip": "Code of the arm the subject actually received. Usually the same as ARMCD, unless the subject got the wrong treatment."
+    },
+    "ACTARM": {
+      "step": "arms",
+      "tip": "Name of the arm the subject actually received."
+    },
+    "ARMNRS": {
+      "step": "arms",
+      "tip": "Reason the arm is empty, for example \"SCREEN FAILURE\" or \"ASSIGNED, NOT TREATED\". Only filled when ARMCD and ACTARMCD are empty."
+    },
+    "ACTARMUD": {
+      "step": "arms",
+      "tip": "Description of the actual treatment when it does not match any planned arm."
+    },
+    "COUNTRY": {
+      "step": "demographics",
+      "tip": "Three-letter ISO 3166-1 alpha-3 country code of the site, for example \"USA\" or \"POL\"."
+    },
+    "DMDTC": {
+      "step": "dates",
+      "tip": "Date the demographic data were collected, in ISO 8601."
+    },
+    "DMDY": {
+      "step": "dates",
+      "tip": "Study day of DMDTC relative to RFSTDTC. There is no day 0: the day before RFSTDTC is day -1."
+    },
+    "RFCSTDTC": {
+      "step": "dates",
+      "tip": "Only for studies that give a challenge agent (for example an allergen or infectious agent): the first date/time it was given. Leave it out otherwise."
+    },
+    "RFCENDTC": {
+      "step": "dates",
+      "tip": "Only for challenge-agent studies: the last date/time the challenge agent was given."
+    },
+    "INVID": {
+      "step": "identifiers",
+      "tip": "Investigator identifier, if you collect it and it is not already clear from SITEID."
+    },
+    "INVNAM": {
+      "step": "identifiers",
+      "tip": "Investigator name, if collected."
+    }
   },
   "general_tips": {
     "iso8601": "Dates in SDTM are character values in ISO 8601: YYYY-MM-DD, or YYYY-MM-DDThh:mm:ss with a time. Keep partial dates partial (\"2023-05\" or \"2023\"), never impute them in SDTM. In SAS, the E8601DA. and E8601DT. formats write these from SAS date and datetime values.",

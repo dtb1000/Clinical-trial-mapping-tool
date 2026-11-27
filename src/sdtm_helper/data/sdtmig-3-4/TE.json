@@ -1,0 +1,66 @@
+{
+  "name": "TE",
+  "label": "Trial Elements",
+  "class": "Trial Design",
+  "datasetStructure": "One record per planned Element",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TE",
+      "ordinal": "2"
+    },
+    {
+      "name": "ETCD",
+      "label": "Element Code",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "ELEMENT",
+      "label": "Description of Element",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "TESTRL",
+      "label": "Rule for Start of Element",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "TEENRL",
+      "label": "Rule for End of Element",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "TEDUR",
+      "label": "Planned Duration of Element",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "7"
+    }
+  ]
+}

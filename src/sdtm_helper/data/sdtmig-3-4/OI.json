@@ -1,0 +1,79 @@
+{
+  "name": "OI",
+  "label": "Non-host Organism Identifiers",
+  "class": "Study Reference",
+  "datasetStructure": "One record per taxon per non-host",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "OI",
+      "ordinal": "2"
+    },
+    {
+      "name": "NHOID",
+      "label": "Non-host Organism Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "OISEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "OIPARMCD",
+      "label": "Non-host Organism ID Element Short",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/OIPRMCD"
+          }
+        ]
+      },
+      "ordinal": "5"
+    },
+    {
+      "name": "OIPARM",
+      "label": "Non-host Organism ID Element Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/OIPRM"
+          }
+        ]
+      },
+      "ordinal": "6"
+    },
+    {
+      "name": "OIVAL",
+      "label": "Non-host Organism ID Element Value",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Req",
+      "ordinal": "7"
+    }
+  ]
+}
