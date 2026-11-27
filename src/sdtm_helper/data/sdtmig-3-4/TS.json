@@ -1,0 +1,119 @@
+{
+  "name": "TS",
+  "label": "Trial Summary",
+  "class": "Trial Design",
+  "datasetStructure": "One record per trial summary parameter value",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TS",
+      "ordinal": "2"
+    },
+    {
+      "name": "TSSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "TSGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "4"
+    },
+    {
+      "name": "TSPARMCD",
+      "label": "Trial Summary Parameter Short",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/TSPARMCD"
+          }
+        ]
+      },
+      "ordinal": "5"
+    },
+    {
+      "name": "TSPARM",
+      "label": "Trial Summary Parameter",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/TSPARM"
+          }
+        ]
+      },
+      "ordinal": "6"
+    },
+    {
+      "name": "TSVAL",
+      "label": "Parameter Value",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "7"
+    },
+    {
+      "name": "TSVALNF",
+      "label": "Parameter Value Null Flavor",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 21090 NullFlavor",
+      "ordinal": "8"
+    },
+    {
+      "name": "TSVALCD",
+      "label": "Parameter Value Code",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "9"
+    },
+    {
+      "name": "TSVCDREF",
+      "label": "Name of the Reference Terminology",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DICTNAM"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "TSVCDVER",
+      "label": "Version of the Reference Terminology",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "11"
+    }
+  ]
+}

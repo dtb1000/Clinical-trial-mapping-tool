@@ -1,0 +1,81 @@
+{
+  "name": "TV",
+  "label": "Trial Visits",
+  "class": "Trial Design",
+  "datasetStructure": "One record per planned Visit per Arm",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TV",
+      "ordinal": "2"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "ARMCD",
+      "label": "Planned Arm Code",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "ordinal": "6"
+    },
+    {
+      "name": "ARM",
+      "label": "Description of Planned Arm",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "TVSTRL",
+      "label": "Visit Start Rule",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Req",
+      "ordinal": "8"
+    },
+    {
+      "name": "TVENRL",
+      "label": "Visit End Rule",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Perm",
+      "ordinal": "9"
+    }
+  ]
+}

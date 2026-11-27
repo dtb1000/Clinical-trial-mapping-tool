@@ -1,0 +1,56 @@
+{
+  "name": "TM",
+  "label": "Trial Disease Milestones",
+  "class": "Trial Design",
+  "datasetStructure": "One record per Disease Milestone type,",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TM",
+      "ordinal": "2"
+    },
+    {
+      "name": "MIDSTYPE",
+      "label": "Disease Milestone Type",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "TMDEF",
+      "label": "Disease Milestone Definition",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "TMRPT",
+      "label": "Disease Milestone Repetition Indicator",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "5"
+    }
+  ]
+}

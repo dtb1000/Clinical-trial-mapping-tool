@@ -1,0 +1,135 @@
+{
+  "name": "CO",
+  "label": "Comments",
+  "class": "Special Purpose",
+  "datasetStructure": "One record per comment per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "CO",
+      "ordinal": "2"
+    },
+    {
+      "name": "RDOMAIN",
+      "label": "Related Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/DOMAIN"
+          }
+        ]
+      },
+      "ordinal": "3"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "COSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "IDVAR",
+      "label": "Identifying Variable",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "IDVARVAL",
+      "label": "Identifying Variable Value",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "COREF",
+      "label": "Comment Reference",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "8"
+    },
+    {
+      "name": "COVAL",
+      "label": "Comment",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "9"
+    },
+    {
+      "name": "COEVAL",
+      "label": "Evaluator",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EVAL"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "COEVALID",
+      "label": "Evaluator Identifier",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/MEDEVAL"
+          }
+        ]
+      },
+      "ordinal": "11"
+    },
+    {
+      "name": "CODTC",
+      "label": "Date/Time of Comment",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "12"
+    },
+    {
+      "name": "CODY",
+      "label": "Study Day of Comment",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "13"
+    }
+  ]
+}

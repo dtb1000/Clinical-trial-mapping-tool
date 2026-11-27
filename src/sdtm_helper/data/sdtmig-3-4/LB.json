@@ -1,0 +1,687 @@
+{
+  "name": "LB",
+  "label": "Laboratory Test Results",
+  "class": "Findings",
+  "datasetStructure": "One record per lab test per time point per visit per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "LB",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "LBSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "LBGRPID",
+      "label": "Group ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "5"
+    },
+    {
+      "name": "LBREFID",
+      "label": "Specimen ID",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "LBSPID",
+      "label": "Sponsor-Defined Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "LBTESTCD",
+      "label": "Lab Test or Examination Short",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LBTESTCD"
+          }
+        ]
+      },
+      "ordinal": "8"
+    },
+    {
+      "name": "LBTEST",
+      "label": "Lab Test or Examination Name",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LBTEST"
+          }
+        ]
+      },
+      "ordinal": "9"
+    },
+    {
+      "name": "LBTSTCND",
+      "label": "Test Condition",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/TESTCOND"
+          }
+        ]
+      },
+      "ordinal": "10"
+    },
+    {
+      "name": "LBBDAGNT",
+      "label": "Binding Agent",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "11"
+    },
+    {
+      "name": "LBTSTOPO",
+      "label": "Test Operational Objective",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/TSTOPOBJ"
+          }
+        ]
+      },
+      "ordinal": "12"
+    },
+    {
+      "name": "LBCAT",
+      "label": "Category for Lab Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Exp",
+      "ordinal": "13"
+    },
+    {
+      "name": "LBSCAT",
+      "label": "Subcategory for Lab Test",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "14"
+    },
+    {
+      "name": "LBORRES",
+      "label": "Result or Finding in Original Units",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "15"
+    },
+    {
+      "name": "LBORRESU",
+      "label": "Original Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "16"
+    },
+    {
+      "name": "LBRESSCL",
+      "label": "Result Scale",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RSLSCLRS"
+          }
+        ]
+      },
+      "ordinal": "17"
+    },
+    {
+      "name": "LBRESTYP",
+      "label": "Result Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/RESTYPRS"
+          }
+        ]
+      },
+      "ordinal": "18"
+    },
+    {
+      "name": "LBCOLSRT",
+      "label": "Collected Summary Result Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/COLSTYP"
+          }
+        ]
+      },
+      "ordinal": "19"
+    },
+    {
+      "name": "LBORNRLO",
+      "label": "Reference Range Lower Limit in Orig Unit",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "ordinal": "20"
+    },
+    {
+      "name": "LBORNRHI",
+      "label": "Reference Range Upper Limit in Orig Unit",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "ordinal": "21"
+    },
+    {
+      "name": "LBLLOD",
+      "label": "Lower Limit of Detection",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "22"
+    },
+    {
+      "name": "LBSTRESC",
+      "label": "Character Result/Finding in Std Format",
+      "simpleDatatype": "Char",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LBSTRESC"
+          }
+        ]
+      },
+      "ordinal": "23"
+    },
+    {
+      "name": "LBSTRESN",
+      "label": "Numeric Result/Finding in Standard Units",
+      "simpleDatatype": "Num",
+      "role": "Result Qualifier",
+      "core": "Exp",
+      "ordinal": "24"
+    },
+    {
+      "name": "LBSTRESU",
+      "label": "Standard Units",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/UNIT"
+          }
+        ]
+      },
+      "ordinal": "25"
+    },
+    {
+      "name": "LBSTNRLO",
+      "label": "Reference Range Lower Limit-Std Units",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "ordinal": "26"
+    },
+    {
+      "name": "LBSTNRHI",
+      "label": "Reference Range Upper Limit-Std Units",
+      "simpleDatatype": "Num",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "ordinal": "27"
+    },
+    {
+      "name": "LBSTNRC",
+      "label": "Reference Range for",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "Rslt-Std Units Char",
+      "ordinal": "28"
+    },
+    {
+      "name": "LBNRIND",
+      "label": "Reference Range Indicator",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NRIND"
+          }
+        ]
+      },
+      "ordinal": "29"
+    },
+    {
+      "name": "LBSTAT",
+      "label": "Completion Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/ND"
+          }
+        ]
+      },
+      "ordinal": "30"
+    },
+    {
+      "name": "LBREASND",
+      "label": "Reason Test Not Done",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "31"
+    },
+    {
+      "name": "LBNAM",
+      "label": "Vendor Name",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "32"
+    },
+    {
+      "name": "LBLOINC",
+      "label": "LOINC Code",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "LOINC",
+      "ordinal": "33"
+    },
+    {
+      "name": "LBSPEC",
+      "label": "Specimen Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECTYPE"
+          }
+        ]
+      },
+      "ordinal": "34"
+    },
+    {
+      "name": "LBSPCCND",
+      "label": "Specimen Condition",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/SPECCOND"
+          }
+        ]
+      },
+      "ordinal": "35"
+    },
+    {
+      "name": "LBSPCUFL",
+      "label": "Specimen Usability for the Test",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "36"
+    },
+    {
+      "name": "LBMETHOD",
+      "label": "Method of Test or Examination",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/METHOD"
+          }
+        ]
+      },
+      "ordinal": "37"
+    },
+    {
+      "name": "LBANMETH",
+      "label": "Analysis Method",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/LBANMET"
+          }
+        ]
+      },
+      "ordinal": "38"
+    },
+    {
+      "name": "LBTMTHSN",
+      "label": "Test Method Sensitivity",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/TSTMTHSN"
+          }
+        ]
+      },
+      "ordinal": "39"
+    },
+    {
+      "name": "LBLOBXFL",
+      "label": "Last Observation Before Exposure Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Exp",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "40"
+    },
+    {
+      "name": "LBBLFL",
+      "label": "Baseline Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "41"
+    },
+    {
+      "name": "LBFAST",
+      "label": "Fasting Status",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "42"
+    },
+    {
+      "name": "LBDRVFL",
+      "label": "Derived Flag",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "43"
+    },
+    {
+      "name": "LBTOX",
+      "label": "Toxicity",
+      "simpleDatatype": "Char",
+      "role": "Variable Qualifier",
+      "core": "Perm",
+      "ordinal": "44"
+    },
+    {
+      "name": "LBTOXGR",
+      "label": "Standard Toxicity Grade",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "45"
+    },
+    {
+      "name": "LBCLSIG",
+      "label": "Clinically Significant, Collected",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "46"
+    },
+    {
+      "name": "VISITNUM",
+      "label": "Visit Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "47"
+    },
+    {
+      "name": "VISIT",
+      "label": "Visit Name",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "48"
+    },
+    {
+      "name": "VISITDY",
+      "label": "Planned Study Day of Visit",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "49"
+    },
+    {
+      "name": "TAETORD",
+      "label": "Planned Order of Element within Arm",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "50"
+    },
+    {
+      "name": "EPOCH",
+      "label": "Epoch",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/EPOCH"
+          }
+        ]
+      },
+      "ordinal": "51"
+    },
+    {
+      "name": "LBDTC",
+      "label": "Date/Time of Specimen Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "52"
+    },
+    {
+      "name": "LBENDTC",
+      "label": "End Date/Time of Specimen Collection",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "53"
+    },
+    {
+      "name": "LBDY",
+      "label": "Study Day of Specimen Collection",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "54"
+    },
+    {
+      "name": "LBENDY",
+      "label": "Study Day of End of Observation",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "55"
+    },
+    {
+      "name": "LBTPT",
+      "label": "Planned Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "56"
+    },
+    {
+      "name": "LBTPTNUM",
+      "label": "Planned Time Point Number",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "57"
+    },
+    {
+      "name": "LBELTM",
+      "label": "Planned Elapsed Time from Time Point Ref",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "58"
+    },
+    {
+      "name": "LBTPTREF",
+      "label": "Time Point Reference",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "ordinal": "59"
+    },
+    {
+      "name": "LBRFTDTC",
+      "label": "Date/Time of Reference Time Point",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "60"
+    },
+    {
+      "name": "LBPTFL",
+      "label": "Point in Time Flag",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
+          }
+        ]
+      },
+      "ordinal": "61"
+    },
+    {
+      "name": "LBPDUR",
+      "label": "Planned Duration",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "62"
+    }
+  ]
+}

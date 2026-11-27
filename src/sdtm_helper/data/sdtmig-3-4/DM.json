@@ -1,106 +1,124 @@
 {
   "name": "DM",
   "label": "Demographics",
+  "class": "Special Purpose",
   "datasetStructure": "One record per subject",
-  "description": "Hand-built from SDTMIG v3.4 for SDTM Helper. Variable names, labels, Core, roles and codelists only; verify against the published SDTMIG before release.",
   "datasetVariables": [
     {
-      "ordinal": "1",
       "name": "STUDYID",
       "label": "Study Identifier",
       "simpleDatatype": "Char",
       "role": "Identifier",
-      "core": "Req"
+      "core": "Req",
+      "ordinal": "1"
     },
     {
-      "ordinal": "2",
       "name": "DOMAIN",
       "label": "Domain Abbreviation",
       "simpleDatatype": "Char",
       "role": "Identifier",
-      "core": "Req"
+      "core": "Req",
+      "describedValueDomain": "DM",
+      "ordinal": "2"
     },
     {
-      "ordinal": "3",
       "name": "USUBJID",
       "label": "Unique Subject Identifier",
       "simpleDatatype": "Char",
       "role": "Identifier",
-      "core": "Req"
+      "core": "Req",
+      "ordinal": "3"
     },
     {
-      "ordinal": "4",
       "name": "SUBJID",
       "label": "Subject Identifier for the Study",
       "simpleDatatype": "Char",
       "role": "Topic",
-      "core": "Req"
+      "core": "Req",
+      "ordinal": "4"
     },
     {
-      "ordinal": "5",
       "name": "RFSTDTC",
       "label": "Subject Reference Start Date/Time",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "5"
     },
     {
-      "ordinal": "6",
       "name": "RFENDTC",
       "label": "Subject Reference End Date/Time",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "6"
     },
     {
-      "ordinal": "7",
       "name": "RFXSTDTC",
       "label": "Date/Time of First Study Treatment",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "7"
     },
     {
-      "ordinal": "8",
       "name": "RFXENDTC",
       "label": "Date/Time of Last Study Treatment",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "8"
     },
     {
-      "ordinal": "9",
+      "name": "RFCSTDTC",
+      "label": "Date/Time of First Challenge Agent Admin",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "9"
+    },
+    {
+      "name": "RFCENDTC",
+      "label": "Date/Time of Last Challenge Agent Admin",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "10"
+    },
+    {
       "name": "RFICDTC",
       "label": "Date/Time of Informed Consent",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "11"
     },
     {
-      "ordinal": "10",
       "name": "RFPENDTC",
       "label": "Date/Time of End of Participation",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "12"
     },
     {
-      "ordinal": "11",
       "name": "DTHDTC",
       "label": "Date/Time of Death",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Exp",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "13"
     },
     {
-      "ordinal": "12",
       "name": "DTHFL",
       "label": "Subject Death Flag",
       "simpleDatatype": "Char",
@@ -109,54 +127,54 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C66742"
+            "href": "/mdr/root/ct/sdtmct/codelists/NY"
           }
         ]
-      }
+      },
+      "ordinal": "14"
     },
     {
-      "ordinal": "13",
       "name": "SITEID",
       "label": "Study Site Identifier",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
-      "core": "Req"
+      "core": "Req",
+      "ordinal": "15"
     },
     {
-      "ordinal": "14",
       "name": "INVID",
       "label": "Investigator Identifier",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
-      "core": "Perm"
+      "core": "Perm",
+      "ordinal": "16"
     },
     {
-      "ordinal": "15",
       "name": "INVNAM",
       "label": "Investigator Name",
       "simpleDatatype": "Char",
       "role": "Synonym Qualifier",
-      "core": "Perm"
+      "core": "Perm",
+      "ordinal": "17"
     },
     {
-      "ordinal": "16",
       "name": "BRTHDTC",
       "label": "Date/Time of Birth",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Perm",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "18"
     },
     {
-      "ordinal": "17",
       "name": "AGE",
       "label": "Age",
       "simpleDatatype": "Num",
       "role": "Record Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "19"
     },
     {
-      "ordinal": "18",
       "name": "AGEU",
       "label": "Age Units",
       "simpleDatatype": "Char",
@@ -165,13 +183,13 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C66781"
+            "href": "/mdr/root/ct/sdtmct/codelists/AGEU"
           }
         ]
-      }
+      },
+      "ordinal": "20"
     },
     {
-      "ordinal": "19",
       "name": "SEX",
       "label": "Sex",
       "simpleDatatype": "Char",
@@ -180,13 +198,13 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C66731"
+            "href": "/mdr/root/ct/sdtmct/codelists/SEX"
           }
         ]
-      }
+      },
+      "ordinal": "21"
     },
     {
-      "ordinal": "20",
       "name": "RACE",
       "label": "Race",
       "simpleDatatype": "Char",
@@ -195,13 +213,13 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C74457"
+            "href": "/mdr/root/ct/sdtmct/codelists/RACE"
           }
         ]
-      }
+      },
+      "ordinal": "22"
     },
     {
-      "ordinal": "21",
       "name": "ETHNIC",
       "label": "Ethnicity",
       "simpleDatatype": "Char",
@@ -210,45 +228,45 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C66790"
+            "href": "/mdr/root/ct/sdtmct/codelists/ETHNIC"
           }
         ]
-      }
+      },
+      "ordinal": "23"
     },
     {
-      "ordinal": "22",
       "name": "ARMCD",
       "label": "Planned Arm Code",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "24"
     },
     {
-      "ordinal": "23",
       "name": "ARM",
       "label": "Description of Planned Arm",
       "simpleDatatype": "Char",
       "role": "Synonym Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "25"
     },
     {
-      "ordinal": "24",
       "name": "ACTARMCD",
       "label": "Actual Arm Code",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "26"
     },
     {
-      "ordinal": "25",
       "name": "ACTARM",
       "label": "Description of Actual Arm",
       "simpleDatatype": "Char",
       "role": "Synonym Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "27"
     },
     {
-      "ordinal": "26",
       "name": "ARMNRS",
       "label": "Reason Arm and/or Actual Arm is Null",
       "simpleDatatype": "Char",
@@ -257,51 +275,44 @@
       "_links": {
         "codelist": [
           {
-            "href": "/mdr/root/ct/sdtmct/codelists/C142179"
+            "href": "/mdr/root/ct/sdtmct/codelists/ARMNULRS"
           }
         ]
-      }
+      },
+      "ordinal": "28"
     },
     {
-      "ordinal": "27",
       "name": "ACTARMUD",
       "label": "Description of Unplanned Actual Arm",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
-      "core": "Exp"
+      "core": "Exp",
+      "ordinal": "29"
     },
     {
-      "ordinal": "28",
       "name": "COUNTRY",
       "label": "Country",
       "simpleDatatype": "Char",
       "role": "Record Qualifier",
       "core": "Req",
-      "describedValueDomain": "ISO 3166-1 Alpha-3",
-      "_links": {
-        "codelist": [
-          {
-            "href": "/mdr/root/ct/sdtmct/codelists/C66786"
-          }
-        ]
-      }
+      "ordinal": "30"
     },
     {
-      "ordinal": "29",
       "name": "DMDTC",
       "label": "Date/Time of Collection",
       "simpleDatatype": "Char",
       "role": "Timing",
       "core": "Perm",
-      "describedValueDomain": "ISO 8601 datetime or interval"
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "31"
     },
     {
-      "ordinal": "30",
       "name": "DMDY",
       "label": "Study Day of Collection",
       "simpleDatatype": "Num",
       "role": "Timing",
-      "core": "Perm"
+      "core": "Perm",
+      "ordinal": "32"
     }
   ]
 }

@@ -64,6 +64,12 @@ def parse(text: str) -> dict[str, Codelist]:
     return codelists
 
 
+def by_submission_name(codelists: dict[str, Codelist], name: str) -> Codelist | None:
+    """Find a codelist by its short name as the SDTMIG writes it, e.g. "SEX" or "NY"."""
+    name = name.upper()
+    return next((c for c in codelists.values() if c.submission_name.upper() == name), None)
+
+
 def load(path: Path | None = None) -> dict[str, Codelist]:
     path = path or cache_path()
     if not path.exists():

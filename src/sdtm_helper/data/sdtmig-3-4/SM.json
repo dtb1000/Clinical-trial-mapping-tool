@@ -1,0 +1,91 @@
+{
+  "name": "SM",
+  "label": "Subject Disease Milestones",
+  "class": "Special Purpose",
+  "datasetStructure": "One record per Disease Milestone per subject",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "SM",
+      "ordinal": "2"
+    },
+    {
+      "name": "USUBJID",
+      "label": "Unique Subject Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "SMSEQ",
+      "label": "Sequence Number",
+      "simpleDatatype": "Num",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "MIDS",
+      "label": "Disease Milestone Instance Name",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "5"
+    },
+    {
+      "name": "MIDSTYPE",
+      "label": "Disease Milestone Type",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "6"
+    },
+    {
+      "name": "SMSTDTC",
+      "label": "Start Date/Time of Milestone",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "7"
+    },
+    {
+      "name": "SMENDTC",
+      "label": "End Date/Time of Milestone",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Exp",
+      "describedValueDomain": "ISO 8601 datetime or interval",
+      "ordinal": "8"
+    },
+    {
+      "name": "SMSTDY",
+      "label": "Study Day of Start of Milestone",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "9"
+    },
+    {
+      "name": "SMENDY",
+      "label": "Study Day of End of Milestone",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Exp",
+      "ordinal": "10"
+    }
+  ]
+}

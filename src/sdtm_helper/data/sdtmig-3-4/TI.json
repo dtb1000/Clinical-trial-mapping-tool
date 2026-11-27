@@ -1,0 +1,80 @@
+{
+  "name": "TI",
+  "label": "Trial Inclusion/Exclusion Criteria",
+  "class": "Trial Design",
+  "datasetStructure": "One record per I/E criterion",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TI",
+      "ordinal": "2"
+    },
+    {
+      "name": "IETESTCD",
+      "label": "Incl/Excl Criterion Short Name",
+      "simpleDatatype": "Char",
+      "role": "Topic",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "IETEST",
+      "label": "Inclusion/Exclusion Criterion",
+      "simpleDatatype": "Char",
+      "role": "Synonym Qualifier",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "IECAT",
+      "label": "Inclusion/Exclusion Category",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Req",
+      "_links": {
+        "codelist": [
+          {
+            "href": "/mdr/root/ct/sdtmct/codelists/IECAT"
+          }
+        ]
+      },
+      "ordinal": "5"
+    },
+    {
+      "name": "IESCAT",
+      "label": "Inclusion/Exclusion Subcategory",
+      "simpleDatatype": "Char",
+      "role": "Grouping Qualifier",
+      "core": "Perm",
+      "ordinal": "6"
+    },
+    {
+      "name": "TIRL",
+      "label": "Inclusion/Exclusion Criterion Rule",
+      "simpleDatatype": "Char",
+      "role": "Rule",
+      "core": "Perm",
+      "ordinal": "7"
+    },
+    {
+      "name": "TIVERS",
+      "label": "Protocol Criteria Versions",
+      "simpleDatatype": "Char",
+      "role": "Record Qualifier",
+      "core": "Perm",
+      "ordinal": "8"
+    }
+  ]
+}

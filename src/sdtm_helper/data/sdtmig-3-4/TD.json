@@ -1,0 +1,85 @@
+{
+  "name": "TD",
+  "label": "Trial Disease Assessments",
+  "class": "Trial Design",
+  "datasetStructure": "One record per planned constant assessment",
+  "datasetVariables": [
+    {
+      "name": "STUDYID",
+      "label": "Study Identifier",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "ordinal": "1"
+    },
+    {
+      "name": "DOMAIN",
+      "label": "Domain Abbreviation",
+      "simpleDatatype": "Char",
+      "role": "Identifier",
+      "core": "Req",
+      "describedValueDomain": "TD",
+      "ordinal": "2"
+    },
+    {
+      "name": "TDORDER",
+      "label": "Sequence of Planned Assessment Schedule",
+      "simpleDatatype": "Num",
+      "role": "Timing",
+      "core": "Req",
+      "ordinal": "3"
+    },
+    {
+      "name": "TDANCVAR",
+      "label": "Anchor Variable",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "ordinal": "4"
+    },
+    {
+      "name": "TDSTOFF",
+      "label": "Offset from the Anchor",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "5"
+    },
+    {
+      "name": "TDTGTPAI",
+      "label": "Planned Assessment Interval",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "6"
+    },
+    {
+      "name": "TDMINPAI",
+      "label": "Planned Assessment Interval Minimum",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "7"
+    },
+    {
+      "name": "TDMAXPAI",
+      "label": "Planned Assessment Interval Maximum",
+      "simpleDatatype": "Char",
+      "role": "Timing",
+      "core": "Req",
+      "describedValueDomain": "ISO 8601 duration",
+      "ordinal": "8"
+    },
+    {
+      "name": "TDNUMRPT",
+      "label": "Maximum Number of Actual Assessments",
+      "simpleDatatype": "Num",
+      "role": "Record Qualifier",
+      "core": "Req",
+      "ordinal": "9"
+    }
+  ]
+}

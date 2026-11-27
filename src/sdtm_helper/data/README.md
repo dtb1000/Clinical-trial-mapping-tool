@@ -5,8 +5,9 @@ domain, plus `manifest.json`. Users need no CDISC account.
 
 ## How it is built
 
-The CDISC Library API only serves SDTMIG content to CDISC members, so for now the files are
-**hand-built**. Each file holds only the facts the app needs: variable names, labels, types,
+The CDISC Library API only serves SDTMIG content to CDISC members, so the files are
+**extracted from the published SDTMIG PDF** with `scripts/extract_sdtmig_text.py` (run it on
+a text export of the PDF). The PDF itself is not stored in the repository. Each file holds only the facts the app needs: variable names, labels, types,
 Core (Req/Exp/Perm), roles, and controlled terminology codelist codes. The files don't copy
 CDISC's notes text. The app's own explanations live in `guidance/<domain>.json`.
 
