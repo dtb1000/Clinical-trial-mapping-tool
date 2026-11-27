@@ -33,7 +33,7 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 ## Where the standards come from
 
 - **Controlled terminology** comes from the public NCI EVS release files, so it needs no account.
-- **SDTMIG variable metadata** ships with the app in `src/sdtm_helper/data/`. The maintainer builds it once with their own CDISC Library key (`scripts/build_standards_bundle.py`) and publishes a new release when CDISC updates the standards. The app checks GitHub for newer releases and reminds the user. Users who have their own key can also run `sdtm-helper fetch-standards DM`.
+- **SDTMIG variable metadata** ships with the app in `src/sdtm_helper/data/`. The CDISC Library API only serves SDTMIG to CDISC members, so the files are hand-built from SDTMIG v3.4 and verified against the published guide (see `src/sdtm_helper/data/README.md`). A maintainer with membership can replace them with `scripts/build_standards_bundle.py`. The app checks GitHub for newer releases and reminds the user to update.
 
 Downloaded files are cached in `%USERPROFILE%\.sdtm_helper\standards`, and saved work in `%USERPROFILE%\.sdtm_helper\progress`.
 
