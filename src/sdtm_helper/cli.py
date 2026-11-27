@@ -9,6 +9,8 @@ from . import SDTMIG_VERSION, progress
 from .standards.cdisc_library import CdiscLibraryError, fetch_domain
 from .standards.domain import DomainNotCached, load_domain
 from .standards import terminology
+from .guidance.engine import build_guide
+from .updates import check_for_update
 
 
 def _connect(args):
@@ -82,6 +84,75 @@ def cmd_compare(args) -> int:
     return 0
 
 
+STATUS_MARK = {"done": "[x]", "missing": "[ ]", "empty": "[ ]", "partly empty": "[~]", "optional": "[-]"}
+
+
+def cmd_guide(args) -> int:
+    """Show the guide for a domain: workflow, next steps and the checklist against the user's table."""
+    spec = load_domain(args.domain, args.version)
+    saved = progress.load(args.study, spec.code) or progress.DomainProgress(study=args.study, domain=spec.code)
+    columns, missing, nobs = None, None, 0
+    if args.libref and args.table:
+        sas = _connect(args)
+        try:
+            info = sas.describe(args.libref, args.table)
+            columns = [c.name for c in info.columns]
+            known = [c for c in columns if spec.variable(c)]
+            missing = sas.missing_counts(args.libref, args.table, known)
+            nobs = info.nobs
+        finally:
+            sas.close()
+        saved.target_table = f"{args.libref.upper()}.{args.table.upper()}"
+    guide = build_guide(spec, columns, missing, nobs)
+    done = set(saved.done_steps)
+
+    print(f"{spec.code}: {spec.label} (SDTMIG {spec.version})")
+    if guide.summary:
+        print(guide.summary)
+    print("\nWorkflow:")
+    for i, step in enumerate(guide.workflow, 1):
+        mark = "[x]" if step.id in done else "[ ]"
+        extra = f"  ({', '.join(step.variables)})" if step.variables else ""
+        print(f"  {mark} {i}. {step.title}{extra}")
+    nxt = guide.next_steps(done)
+    if nxt:
+        print(f"\nNext: {nxt[0].title}. {nxt[0].detail}")
+    print("\nChecklist" + (f" against {saved.target_table}:" if columns is not None else " (no table given yet):"))
+    for item in guide.checklist:
+        if item.status == "optional" and not args.all:
+            continue
+        print(f"  {STATUS_MARK[item.status]} {item.variable:<9} {item.core:<4} {item.detail}")
+    todo = sum(1 for i in guide.checklist if i.needs_action)
+    print(f"\n{todo} item(s) need action. Use 'sdtm-helper explain {spec.code} VAR' for details.")
+    if args.chart:
+        print("\nWorkflow chart (Mermaid):\n" + guide.mermaid(done))
+    progress.save(saved)
+    return 0
+
+
+def cmd_explain(args) -> int:
+    spec = load_domain(args.domain, args.version)
+    print(build_guide(spec).explain(args.variable, spec))
+    return 0
+
+
+def cmd_step(args) -> int:
+    spec = load_domain(args.domain, args.version)
+    guide = build_guide(spec)
+    ids = {s.id for s in guide.workflow}
+    if args.step not in ids:
+        print(f"Unknown step. Choose one of: {', '.join(s.id for s in guide.workflow)}", file=sys.stderr)
+        return 1
+    saved = progress.load(args.study, spec.code) or progress.DomainProgress(study=args.study, domain=spec.code)
+    if args.undo:
+        saved.done_steps = [s for s in saved.done_steps if s != args.step]
+    else:
+        saved.mark_done(args.step)
+    path = progress.save(saved)
+    print(f"Saved. {len(saved.done_steps)} of {len(ids)} {spec.code} steps done ({path}).")
+    return 0
+
+
 def cmd_progress(args) -> int:
     saved = progress.list_saved()
     if not saved:
@@ -128,6 +199,29 @@ def build_parser() -> argparse.ArgumentParser:
     sas_options(p)
     p.set_defaults(func=cmd_compare)
 
+    p = sub.add_parser("guide", help="Workflow, next step and checklist for the domain you are mapping")
+    p.add_argument("domain")
+    p.add_argument("libref", nargs="?", help="Library of the table you are building, e.g. FINAL")
+    p.add_argument("table", nargs="?", help="The table you are building, e.g. DM")
+    p.add_argument("--study", default="default", help="Study name, used to save your progress")
+    p.add_argument("--all", action="store_true", help="Also list permissible variables")
+    p.add_argument("--chart", action="store_true", help="Print the workflow as a Mermaid chart")
+    p.add_argument("--version", default=SDTMIG_VERSION)
+    sas_options(p)
+    p.set_defaults(func=cmd_guide)
+
+    p = sub.add_parser("explain", help="Explain one variable: SDTMIG notes, format, terminology, tips")
+    p.add_argument("domain"); p.add_argument("variable")
+    p.add_argument("--version", default=SDTMIG_VERSION)
+    p.set_defaults(func=cmd_explain)
+
+    p = sub.add_parser("step", help="Mark a workflow step done (or --undo) and save progress")
+    p.add_argument("domain"); p.add_argument("step")
+    p.add_argument("--study", default="default")
+    p.add_argument("--undo", action="store_true")
+    p.add_argument("--version", default=SDTMIG_VERSION)
+    p.set_defaults(func=cmd_step)
+
     p = sub.add_parser("progress", help="List saved work")
     p.set_defaults(func=cmd_progress)
     return parser
@@ -135,6 +229,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command in ("guide", "progress"):
+        reminder = check_for_update()
+        if reminder:
+            print(reminder + "\n")
     try:
         return args.func(args)
     except (CdiscLibraryError, FileNotFoundError, LookupError, ValueError) as err:

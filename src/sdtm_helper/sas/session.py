@@ -89,6 +89,26 @@ class SasConnection:
         ]
         return TableInfo(libref=libref, name=table, nobs=nobs, columns=columns)
 
+    def missing_counts(self, libref: str, table: str, variables: list[str]) -> dict[str, int]:
+        """Count empty values per variable, so the checklist can say what still needs filling.
+
+        This is read-only: it creates one small summary table in WORK and reads it back.
+        """
+        libref, table = _safe_name(libref), _safe_name(table)
+        names = [_safe_name(v) for v in variables]
+        if not names:
+            return {}
+        sums = ",\n    ".join(f"sum(missing({n})) as {n}" for n in names)
+        log = self._sas.submit(
+            f"proc sql;\n  create table work._sdtmh_missing as\n  select\n    {sums}\n"
+            f"  from {libref}.{table};\nquit;"
+        )
+        df = self._sas.sasdata("_sdtmh_missing", "work").to_df()
+        if df is None or df.empty:
+            raise RuntimeError("Could not count missing values. SAS log:\n" + log.get("LOG", ""))
+        row = df.iloc[0]
+        return {n: int(row[n] or 0) for n in names}
+
     def close(self) -> None:
         self._sas.endsas()
 
