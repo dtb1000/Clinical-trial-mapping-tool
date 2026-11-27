@@ -1,0 +1,15 @@
+# Secrets: never commit these
+config/sascfg_personal.py
+sascfg_personal.py
+_authinfo
+.authinfo
+.env
+
+# Local caches and saved work
+.sdtm_helper/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+build/
+dist/
+.venv/
