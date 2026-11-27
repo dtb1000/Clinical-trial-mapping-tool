@@ -23,5 +23,8 @@ sdtm-helper = "sdtm_helper.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+sdtm_helper = ["data/**/*.json", "guidance/*.json"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]

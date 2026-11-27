@@ -87,11 +87,26 @@ def parse_domain(data: dict, version: str = SDTMIG_VERSION) -> DomainSpec:
     )
 
 
+BUNDLE_DIR = Path(__file__).resolve().parents[1] / "data"
+
+
+def bundled_path(domain: str, version: str = SDTMIG_VERSION) -> Path:
+    return BUNDLE_DIR / f"sdtmig-{version.replace('.', '-')}" / f"{domain.upper()}.json"
+
+
+def bundle_manifest(version: str = SDTMIG_VERSION) -> dict | None:
+    path = BUNDLE_DIR / f"sdtmig-{version.replace('.', '-')}" / "manifest.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
 def load_domain(domain: str, version: str = SDTMIG_VERSION, path: Path | None = None) -> DomainSpec:
-    path = path or cache_path(domain, version)
-    if not path.exists():
+    """Load a domain from an explicit path, else the bundle shipped with the app, else the user's own download."""
+    if path is None:
+        candidates = [bundled_path(domain, version), cache_path(domain, version)]
+        path = next((p for p in candidates if p.exists()), None)
+    if path is None or not path.exists():
         raise DomainNotCached(
-            f"SDTMIG {version} {domain.upper()} is not downloaded yet. "
-            f"Run: sdtm-helper fetch-standards {domain.upper()}"
+            f"SDTMIG {version} {domain.upper()} is not in the app's standards bundle yet. "
+            f"Update the app, or run: sdtm-helper fetch-standards {domain.upper()}"
         )
     return parse_domain(json.loads(path.read_text(encoding="utf-8")), version)

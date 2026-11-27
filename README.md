@@ -10,34 +10,30 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 
 | Step | What it delivers | Status |
 |---|---|---|
-| 1. Foundation | SAS connection through SASPy, local SDTMIG and controlled terminology, saved progress | In progress |
-| 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | Planned |
+| 1. Foundation | SAS connection through SASPy, local SDTMIG and controlled terminology, saved progress | Done |
+| 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | In progress |
 | 3. P21-lite checks | Small, fixable conformance checks at the end of each domain, run as SAS code | Planned |
 | 4. More domains and a Windows app | AE, CM, EX, VS, LB and others; installer for Windows; SAS 9.4 Desktop | Planned |
 
 ## Getting started
 
 1. Follow [docs/saspy-setup-windows.md](docs/saspy-setup-windows.md) to connect to SAS OnDemand for Academics.
-2. Download the standards:
+2. Download the controlled terminology (no key needed): `sdtm-helper fetch-ct`
+3. Tell the app which domain you are mapping, and point it at the table you are building:
 
    ```
-   sdtm-helper fetch-ct                  # controlled terminology from NCI EVS, no key needed
-   set CDISC_API_KEY=your-key            # your own CDISC Library key
-   sdtm-helper fetch-standards DM AE     # SDTMIG v3.4 variable metadata
+   sdtm-helper guide DM FINAL DM --study LORNA --autoexec path\to\libname.sas
+   sdtm-helper explain DM RFSTDTC
+   sdtm-helper step DM identifiers --study LORNA
+   sdtm-helper guide DM --study LORNA --chart
    ```
 
-3. Try it on a table:
-
-   ```
-   sdtm-helper check-sas --autoexec path\to\libname.sas
-   sdtm-helper show-domain DM
-   sdtm-helper compare DM FINAL DM --autoexec path\to\libname.sas
-   ```
+   `guide` shows the workflow, your next step and a checklist of required and expected variables that are missing or empty. `step` ticks off a workflow step; progress is saved and picked up next time. `--chart` prints the workflow as a Mermaid flowchart.
 
 ## Where the standards come from
 
 - **Controlled terminology** comes from the public NCI EVS release files, so it needs no account.
-- **SDTMIG variable metadata** comes from the CDISC Library API, which needs each user's own API key from a CDISC account. A shared key cannot be shipped in an open-source app.
+- **SDTMIG variable metadata** ships with the app in `src/sdtm_helper/data/`. The maintainer builds it once with their own CDISC Library key (`scripts/build_standards_bundle.py`) and publishes a new release when CDISC updates the standards. The app checks GitHub for newer releases and reminds the user. Users who have their own key can also run `sdtm-helper fetch-standards DM`.
 
 Downloaded files are cached in `%USERPROFILE%\.sdtm_helper\standards`, and saved work in `%USERPROFILE%\.sdtm_helper\progress`.
 

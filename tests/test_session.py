@@ -47,3 +47,21 @@ def test_rejects_unsafe_names():
 
 def test_list_libraries():
     assert SasConnection(session=FakeSas()).list_libraries() == ["RAW", "WORK"]
+
+
+class FakeSasWithMissing(FakeSas):
+    def submit(self, code):
+        self.code = code
+        return {"LOG": ""}
+
+    def sasdata(self, table, libref, dsopts=None):
+        if table == "_sdtmh_missing":
+            return FakeData(pd.DataFrame([{"SEX": 2.0, "RACE": 0.0}]))
+        return super().sasdata(table, libref, dsopts)
+
+
+def test_missing_counts():
+    fake = FakeSasWithMissing()
+    counts = SasConnection(session=fake).missing_counts("final", "dm", ["sex", "race"])
+    assert counts == {"SEX": 2, "RACE": 0}
+    assert "sum(missing(SEX)) as SEX" in fake.code and "from FINAL.DM" in fake.code
