@@ -99,3 +99,47 @@ def test_follow_marks_the_step_under_the_cursor(window):
     window.preview.list.setCurrentRow(1)
     assert list(model.df.columns) == ["STUDYID", "USUBJID", "SEX", "COUNTRY"]
     assert window.editor.extraSelections()
+
+
+def test_problems_are_underlined_listed_and_explained(window):
+    from PySide6.QtGui import QTextCharFormat
+    from test_lint import BROKEN
+    window.editor.setPlainText(BROKEN)
+    window.check_code()
+    assert "Problems (" in window.bottom.tabText(1)
+    assert window.problems_view.topLevelItemCount() >= 6
+    layout = window.editor.document().findBlockByNumber(5).layout()     # if SEX == "Male"
+    underlined = [r for r in layout.formats() if r.format.underlineStyle() == QTextCharFormat.WaveUnderline]
+    assert underlined
+    assert window.problem_at(5, 9).message == "SAS compares with = or EQ, not ==."
+    window._go_to_problem(window.problems_view.topLevelItem(0))
+    assert window.editor.textCursor().blockNumber() == window.all_problems()[0].line
+    window.editor.setPlainText("data x;\n  set y;\nrun;\n")
+    window.check_code()
+    assert window.bottom.tabText(1) == "Problems"
+
+
+def test_sas_errors_stay_until_their_line_changes(window):
+    from test_lint import CODE, LOG
+    window.editor.setPlainText(CODE)
+    window.add_sas_problems(LOG, CODE, 0)
+    window.check_code()
+    assert any(p.source == "SAS" for p in window.all_problems())
+    window.editor.setPlainText(CODE.replace('catx("-" STUDYID', 'catx("-", STUDYID'))
+    window.check_code()
+    assert not any(p.source == "SAS" for p in window.all_problems())
+
+
+def test_function_lookup_and_f1(window):
+    from PySide6.QtGui import QTextCursor
+    window.show_function("intck")
+    assert "INTCK(interval" in window.func_text.toPlainText()
+    assert "SAS+Help+Center" in window.func_text.toHtml()
+    window.show_function("catz")
+    assert "Did you mean CATS, CATT, CATX?" in window.func_text.toPlainText()
+    window.editor.setPlainText("data x;\n  call missing(a);\nrun;")
+    cursor = window.editor.textCursor()
+    cursor.setPosition(window.editor.toPlainText().index("missing") + 2)
+    window.editor.setTextCursor(cursor)
+    window.lookup_word()
+    assert "CALL MISSING(" in window.func_text.toPlainText()

@@ -33,6 +33,15 @@ The window has your SAS program with the **tables** beside it, the SAS log under
 
 ![The Details view of the table a step makes](docs/images/app-follow-details.png)
 
+### Problems as you type, and SAS function lookup
+
+![Squiggly underlines, the Problems list and the SAS functions tab](docs/images/app-problems.png)
+
+- **Squiggly underlines**, like PyCharm: red for errors, amber for warnings. Hover over one to read the message. The **Problems** tab under the editor lists them all; double-click one to jump to it.
+  - A **quick check** runs as you type, without SAS: a missing semicolon, an unclosed quote, comment or bracket, a DO or SELECT without END, `==` or `!=` (SAS uses `=`/`EQ` and `^=`/`NE`), a misspelt function ("catz isn't a SAS function. Did you mean CATS, CATT or CATX?"), and a last step without RUN or QUIT.
+  - **SAS's own errors and warnings** are underlined too, at the column SAS marks in the log, after each Run (F3) and each time Follow my code runs your step. "Variable … is uninitialized" notes show as warnings, since they usually mean a misspelt or dropped variable. They clear when you change that line.
+- **SAS functions**: type a function in the **SAS function** box in the toolbar, or press **F1** on a function in your program (CALL routines and % macro functions too). The **SAS functions** tab shows its syntax, a short summary and, for the common ones, how it is used in SDTM mapping, with a link to SAS's documentation. You can also search by topic, e.g. "date". SAS's documentation site has no links by function name, so the link opens a web search for the function's SAS Help Center page, which comes up as the first result.
+
 The guide tabs:
 
 - **Guide**: every variable of the domain, with its Core status, format, terminology and tips. Click one to read about it.

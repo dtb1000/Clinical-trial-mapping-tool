@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, QObject, QPointF, QRectF, QRunnable, Qt, QThreadPool, QTimer, Signal
+from PySide6.QtCore import QAbstractTableModel, QEvent, QModelIndex, QObject, QPointF, QRectF, QRunnable, Qt, QThreadPool, QTimer, Signal
 from PySide6.QtGui import (QAction, QColor, QFont, QKeySequence, QPainter, QPen, QSyntaxHighlighter,
                            QTextCharFormat)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
@@ -20,6 +20,8 @@ from .. import __version__
 from ..checks.engine import ERROR, NOTICE, WARNING, CheckReport
 from ..guidance.engine import DomainGuide
 from ..settings import CONNECTIONS, ODA_REGIONS, AppSettings, load_settings, save_settings
+from ..sas import functions as sasfunctions
+from ..sas import lint
 from ..sas.session import ColumnInfo, TableInfo
 from .follow import FollowedTable, FollowResult
 from .workspace import Preview, Workspace, available_domains
@@ -75,6 +77,21 @@ class SasHighlighter(QSyntaxHighlighter):
         self.comment.setFontItalic(True)
         words = "|".join(re.escape(k) for k in self.KEYWORDS)
         self.word_re = re.compile(rf"(?<![\w%])({words})\b", re.IGNORECASE)
+        self.problems: dict[int, list[lint.Problem]] = {}
+
+    def set_problems(self, problems: list[lint.Problem]):
+        """Squiggly underlines, red for errors and amber for warnings, like PyCharm."""
+        new: dict[int, list[lint.Problem]] = {}
+        for p in problems:
+            if p.line >= 0:
+                new.setdefault(p.line, []).append(p)
+        changed = set(new) | set(self.problems)
+        self.problems = new
+        doc = self.document()
+        for line in changed:
+            block = doc.findBlockByNumber(line)
+            if block.isValid():
+                self.rehighlightBlock(block)
 
     def highlightBlock(self, text):
         for m in self.word_re.finditer(text):
@@ -95,6 +112,16 @@ class SasHighlighter(QSyntaxHighlighter):
                 length = end - start + 2
             self.setFormat(start, length, self.comment)
             start = text.find("/*", start + length)
+        for p in self.problems.get(self.currentBlock().blockNumber(), []):
+            if not text:
+                continue
+            colour = QColor("#d32f2f" if p.severity == lint.ERROR else "#e6a100")
+            first = min(p.col, len(text) - 1)
+            for i in range(first, min(len(text), first + max(1, p.length))):
+                fmt = self.format(i)
+                fmt.setUnderlineStyle(QTextCharFormat.WaveUnderline)
+                fmt.setUnderlineColor(colour)
+                self.setFormat(i, 1, fmt)
 
 
 def monospace() -> QFont:
@@ -631,6 +658,23 @@ class MainWindow(QMainWindow):
         action("Settings", self.edit_settings)
         bar.addSeparator()
         self.guide_toggle = action("Hide guide", self.toggle_guide, "F9", "Show or hide the guide panel  [F9]")
+        bar.addSeparator()
+        bar.addWidget(QLabel(" SAS function "))
+        self.func_box = QLineEdit()
+        self.func_box.setPlaceholderText("e.g. INTCK")
+        self.func_box.setFixedWidth(120)
+        from PySide6.QtWidgets import QCompleter
+        names = sorted({f.name for f in sasfunctions.FUNCTIONS.values()} | sasfunctions.NAMES)
+        completer = QCompleter(names, self.func_box)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.func_box.setCompleter(completer)
+        self.func_box.returnPressed.connect(lambda: self.show_function(self.func_box.text()))
+        self.func_box.setToolTip("Type a SAS function and press Enter to see its syntax and open the SAS documentation")
+        bar.addWidget(self.func_box)
+        help_action = QAction("Look up function", self)
+        help_action.setShortcut(QKeySequence("F1"))
+        help_action.triggered.connect(self.lookup_word)
+        self.addAction(help_action)
 
     def _build_body(self):
         left = QSplitter(Qt.Vertical)
@@ -653,6 +697,15 @@ class MainWindow(QMainWindow):
         self.follow_timer.setInterval(1200)
         self.follow_timer.timeout.connect(self.follow_now)
         self.editor.textChanged.connect(self._editor_changed)
+        self.check_problems: list[lint.Problem] = []
+        self.sas_problems: list[tuple[lint.Problem, str]] = []    # with the line's text when SAS saw it
+        self.lint_timer = QTimer(self)
+        self.lint_timer.setSingleShot(True)
+        self.lint_timer.setInterval(400)
+        self.lint_timer.timeout.connect(self.check_code)
+        self.editor.textChanged.connect(self.lint_timer.start)
+        self.editor.viewport().installEventFilter(self)
+        self.editor.setMouseTracking(True)
         self.editor.cursorPositionChanged.connect(self._cursor_moved)
         self.busy = False
         self.following = False      # a follow run is in progress
@@ -662,7 +715,15 @@ class MainWindow(QMainWindow):
         top.addWidget(self.preview)
         top.setSizes([520, 680])
         left.addWidget(top)
-        left.addWidget(self._titled("Log", self.log))
+        self.bottom = QTabWidget()
+        self.bottom.addTab(self.log, "Log")
+        self.problems_view = QTreeWidget()
+        self.problems_view.setHeaderLabels(["", "Line", "Problem", "Found by"])
+        self.problems_view.setRootIsDecorated(False)
+        self.problems_view.header().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.problems_view.itemDoubleClicked.connect(self._go_to_problem)
+        self.bottom.addTab(self.problems_view, "Problems")
+        left.addWidget(self.bottom)
         left.setSizes([600, 220])
 
         self.tabs = QTabWidget()
@@ -722,6 +783,27 @@ class MainWindow(QMainWindow):
         k.addWidget(self.dm_table)
         k.addWidget(self.findings)
         self.tabs.addTab(checks, "Checks")
+        # SAS functions tab
+        funcs = QWidget()
+        fl = QVBoxLayout(funcs)
+        self.func_search = QLineEdit()
+        self.func_search.setPlaceholderText("Type a SAS function, e.g. CATX, or a word such as date")
+        self.func_search.textChanged.connect(self._search_functions)
+        self.func_search.returnPressed.connect(lambda: self.show_function(self.func_search.text()))
+        self.func_list = QListWidget()
+        self.func_list.currentItemChanged.connect(
+            lambda item, _old: item and self._describe_function(item.data(Qt.UserRole)))
+        self.func_text = QTextBrowser()
+        self.func_text.setOpenExternalLinks(True)
+        fsplit = QSplitter(Qt.Vertical)
+        fsplit.addWidget(self.func_list)
+        fsplit.addWidget(self.func_text)
+        fsplit.setSizes([260, 300])
+        fl.addWidget(QLabel("Press F1 on a function in your program to look it up."))
+        fl.addWidget(self.func_search)
+        fl.addWidget(fsplit)
+        self.tabs.addTab(funcs, "SAS functions")
+        self._search_functions("")
 
         body = QSplitter(Qt.Horizontal)
         body.addWidget(left)
@@ -879,12 +961,14 @@ class MainWindow(QMainWindow):
         if not self._need_sas():
             return
         cursor = self.editor.textCursor()
-        code = cursor.selectedText().replace(" ", "\n") or self.editor.toPlainText()
+        code = cursor.selectedText().replace("\u2029", "\n") or self.editor.toPlainText()
+        start_line = self.editor.document().findBlock(cursor.selectionStart()).blockNumber() if cursor.hasSelection() else 0
         self.ws.save(self.editor.toPlainText(), self.table.text())
 
         def done(log):
             self.busy = False
             self.show_log(log)
+            self.add_sas_problems(log, code, start_line)
             self.statusBar().showMessage("Program finished. Refreshing the table and checklist…")
             self.refresh()
             self.update_tables()
@@ -970,6 +1054,10 @@ class MainWindow(QMainWindow):
         def done(result):
             self.following = False
             self.preview.show_follow(result, self.ws.spec)
+            if result.log and result.step_start >= 0:
+                first = program.count("\n", 0, result.step_start)
+                code = program[result.step_start:result.step_end]
+                self.add_sas_problems(result.log, code, first, (first, first + code.count("\n")))
             self._mark_step(result if not result.message or result.error else None)
             if self.follow_again:
                 self.follow_again = False
@@ -1007,6 +1095,153 @@ class MainWindow(QMainWindow):
         task.signals.done.connect(on_done)
         task.signals.failed.connect(on_fail or (lambda _e: None))
         self.pool.start(task)
+
+    # -- problems: squiggly underlines ------------------------------------------
+    def check_code(self):
+        """The quick check, as you type. SAS's own messages stay while their line is unchanged."""
+        text = self.editor.toPlainText()
+        self.check_problems = lint.check(text)
+        lines = text.split("\n")
+        self.sas_problems = [(p, t) for p, t in self.sas_problems
+                             if p.line < 0 or (p.line < len(lines) and lines[p.line] == t)]
+        self._show_problems()
+
+    def add_sas_problems(self, log: str, code: str, start_line: int, replace: tuple[int, int] | None = None):
+        """SAS's errors from a run. replace=(first, last) drops older SAS messages on those lines first."""
+        lines = self.editor.toPlainText().split("\n")
+        if replace is None:
+            kept = []
+        else:
+            kept = [(p, t) for p, t in self.sas_problems if not (replace[0] <= p.line <= replace[1])]
+        new = [(p, lines[p.line] if 0 <= p.line < len(lines) else "") for p in lint.from_log(log, code, start_line)]
+        self.sas_problems = kept + new
+        self._show_problems()
+
+    def all_problems(self) -> list[lint.Problem]:
+        seen, out = set(), []
+        for p in [p for p, _t in self.sas_problems] + self.check_problems:
+            key = (p.line, p.col, p.message)
+            if key not in seen:
+                seen.add(key)
+                out.append(p)
+        return sorted(out, key=lambda p: (p.line, p.col))
+
+    def _show_problems(self):
+        problems = self.all_problems()
+        self.highlighter.set_problems(problems)
+        self.problems_view.clear()
+        for p in problems:
+            item = QTreeWidgetItem(["●", str(p.line + 1) if p.line >= 0 else "", p.message,
+                                    "SAS log" if p.source == "SAS" else "Quick check"])
+            item.setForeground(0, QColor("#d32f2f" if p.severity == lint.ERROR else "#e6a100"))
+            item.setToolTip(2, p.message)
+            item.setData(0, Qt.UserRole, (p.line, p.col))
+            self.problems_view.addTopLevelItem(item)
+        errors = sum(p.severity == lint.ERROR for p in problems)
+        warnings = len(problems) - errors
+        label = "Problems" if not problems else f"Problems ({errors} error{'s' * (errors != 1)}, {warnings} warning{'s' * (warnings != 1)})"
+        self.bottom.setTabText(1, label)
+
+    def _go_to_problem(self, item, _col=0):
+        line, col = item.data(0, Qt.UserRole)
+        if line < 0:
+            return
+        from PySide6.QtGui import QTextCursor
+        block = self.editor.document().findBlockByNumber(line)
+        cursor = QTextCursor(block)
+        cursor.movePosition(QTextCursor.Right, n=min(col, max(0, block.length() - 1)))
+        self.editor.setTextCursor(cursor)
+        self.editor.setFocus()
+
+    def problem_at(self, line: int, col: int) -> lint.Problem | None:
+        for p in self.all_problems():
+            if p.line == line and p.col <= col <= p.col + max(1, p.length):
+                return p
+        return None
+
+    def eventFilter(self, obj, event):
+        if obj is self.editor.viewport() and event.type() == QEvent.ToolTip:
+            from PySide6.QtWidgets import QToolTip
+            cursor = self.editor.cursorForPosition(event.pos())
+            p = self.problem_at(cursor.blockNumber(), cursor.positionInBlock())
+            if p:
+                QToolTip.showText(event.globalPos(), f"{'Error' if p.severity == lint.ERROR else 'Warning'}: {p.message}"
+                                  + ("  (from SAS)" if p.source == "SAS" else ""), self.editor)
+            else:
+                QToolTip.hideText()
+            return True
+        return super().eventFilter(obj, event)
+
+    # -- SAS functions -----------------------------------------------------------
+    def _search_functions(self, text: str):
+        self.func_list.blockSignals(True)
+        self.func_list.clear()
+        for f in sasfunctions.search(text, limit=200):
+            item = QListWidgetItem(f"{f.name}  –  {f.category}")
+            item.setData(Qt.UserRole, f.name)
+            self.func_list.addItem(item)
+        self.func_list.blockSignals(False)
+        if self.func_list.count():
+            self.func_list.setCurrentRow(0)
+            self._describe_function(self.func_list.item(0).data(Qt.UserRole))
+        elif text.strip():
+            self._describe_function(text)
+
+    def _describe_function(self, name: str):
+        f = sasfunctions.find(name)
+        all_link = f'<a href="{sasfunctions.REFERENCE_URL}">All SAS functions and CALL routines</a>'
+        if f is None:
+            name = name.strip().upper()
+            if sasfunctions.is_known(name):
+                body = (f"<h3>{html.escape(name)}</h3><p>A SAS function this app has no summary for.</p>"
+                        f'<p><a href="{sasfunctions.doc_url(name)}"><b>Open {html.escape(name)} in the SAS documentation</b></a></p>')
+            else:
+                guesses = sasfunctions.closest(name)
+                hint = (" Did you mean " + ", ".join(html.escape(g) for g in guesses) + "?") if guesses else ""
+                body = (f"<h3>{html.escape(name)}</h3><p>Not a SAS function this app knows.{hint}</p>"
+                        f'<p><a href="{sasfunctions.doc_url(name)}">Search the SAS documentation for {html.escape(name)}</a></p>')
+            self.func_text.setHtml(body + f"<p>{all_link}</p>")
+            return
+        tip = f"<p><b>In SDTM mapping:</b> {html.escape(f.sdtm)}</p>" if f.sdtm else ""
+        self.func_text.setHtml(
+            f"<h3>{html.escape(f.name)}</h3><p><code>{html.escape(f.syntax)}</code></p>"
+            f"<p><i>{html.escape(f.category)}</i></p><p>{html.escape(f.summary)}</p>{tip}"
+            f'<p><a href="{f.doc_url}"><b>Open {html.escape(f.name)} in the SAS documentation</b></a></p>'
+            f"<p>{all_link}</p>")
+
+    def show_function(self, name: str):
+        """Show a function on the SAS functions tab."""
+        name = name.strip()
+        if not name:
+            return
+        if not self.tabs.isVisible():
+            self.toggle_guide()
+        self.tabs.setCurrentIndex(self.tabs.count() - 1)
+        self.func_search.blockSignals(True)
+        self.func_search.setText(name)
+        self.func_search.blockSignals(False)
+        self._search_functions(name)
+        f = sasfunctions.find(name)
+        for i in range(self.func_list.count()):
+            if f and self.func_list.item(i).data(Qt.UserRole) == f.name:
+                self.func_list.setCurrentRow(i)
+                break
+        self._describe_function(f.name if f else name)
+
+    def lookup_word(self):
+        """F1: look up the function under the cursor (CALL routines and macro functions too)."""
+        from PySide6.QtGui import QTextCursor
+        cursor = self.editor.textCursor()
+        cursor.select(QTextCursor.WordUnderCursor)
+        word = cursor.selectedText().strip()
+        line = cursor.block().text()
+        start = cursor.selectionStart() - cursor.block().position()
+        if start > 0 and line[start - 1] == "%":
+            word = "%" + word
+        if re.search(r"\bcall\s+$", line[:start], re.I):
+            word = "CALL " + word
+        if word:
+            self.show_function(word)
 
     def toggle_guide(self):
         visible = not self.tabs.isVisible()

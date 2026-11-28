@@ -45,6 +45,7 @@ class FollowResult:
     step_start: int = -1
     step_end: int = -1
     plan: sasprog.StepPlan | None = None
+    log: str = ""                   # SAS's log of the sandboxed run, for squiggly underlines
 
 
 def follow(sas: SasConnection, program: str, pos: int, rows: int = 200) -> FollowResult:
@@ -73,6 +74,7 @@ def follow(sas: SasConnection, program: str, pos: int, rows: int = 200) -> Follo
             infos[key] = None
 
     log = sas.submit(sasprog.sandbox(program, step, plan, rows))
+    res.log = log
     errors = [ln for ln in log.splitlines() if ln.startswith("ERROR")]
     if errors:
         res.error = True
