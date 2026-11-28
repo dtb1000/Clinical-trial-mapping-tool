@@ -97,10 +97,11 @@ class SasConnection:
         ]
         return TableInfo(libref=libref, name=table, nobs=nobs, columns=columns)
 
-    def fetch(self, libref: str, table: str):
-        """Read a whole table into a pandas DataFrame (read-only)."""
+    def fetch(self, libref: str, table: str, obs: int | None = None):
+        """Read a table (or its first `obs` rows) into a pandas DataFrame (read-only)."""
         libref, table = _safe_name(libref), _safe_name(table)
-        return self._sas.sasdata(table, libref).to_df()
+        dsopts = {"obs": int(obs)} if obs else None
+        return self._sas.sasdata(table, libref, dsopts=dsopts).to_df()
 
     def missing_counts(self, libref: str, table: str, variables: list[str]) -> dict[str, int]:
         """Count empty values per variable, so the checklist can say what still needs filling.

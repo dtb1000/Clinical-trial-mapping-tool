@@ -42,3 +42,29 @@ def test_checks_and_workflow_in_window(window):
     assert "No errors" in window.checks_summary.text()
     window.toggle_step("load", True)
     assert "load" in window.ws.done
+
+
+def test_table_preview_shows_rows_and_marks_columns(window):
+    from PySide6.QtCore import Qt
+    dm = read("lorna_dm.csv", DM)
+    dm.loc[0, "SEX"] = None
+    dm["EXTRA"] = "x"
+    window.sas = SasConnection(session=FakeSASsession({"FINAL.DM": dm}))
+    window.ws.sas = window.sas
+    preview = window.ws.preview("FINAL.DM", rows=20)
+    window.preview.show_preview(preview, window.ws.spec, "FINAL.DM")
+    model = window.preview.model
+    assert model.rowCount() == 20 and "300 rows" in window.preview.info.text()
+    sex = list(dm.columns).index("SEX")
+    assert model.data(model.index(0, sex), Qt.BackgroundRole) is not None      # empty Required value shaded
+    extra = list(dm.columns).index("EXTRA")
+    assert "Not a DM variable" in model.headerData(extra, Qt.Horizontal, Qt.ToolTipRole)
+    window.preview.show_preview(None, window.ws.spec, "FINAL.XX")
+    assert "doesn't exist yet" in window.preview.info.text()
+
+
+def test_live_mode_needs_a_connection(window, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: None)
+    window.preview.live.setChecked(True)
+    assert not window.preview.live.isChecked()

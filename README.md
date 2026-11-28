@@ -18,9 +18,13 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 
 ## The desktop app
 
-![SDTM Helper window](docs/images/app-workflow.png)
+![SDTM Helper window](docs/images/app-live-preview.png)
 
-The window has your SAS program and the SAS log on the left, and the guide on the right:
+The window has your SAS program with a **live table preview** beside it, the SAS log underneath, and the guide on the right (F9 hides it for more room).
+
+- **Table preview**: the first 200 rows of the table you are building, or any other table (pick WORK or intermediate tables from the list). It refreshes after every run. Red headers are Required variables, shaded cells are empty Required values, grey headers aren't in the domain; hover a header for its label and Core. Tick **Live** to re-run your program automatically about 2 seconds after you stop typing.
+
+The guide tabs:
 
 - **Guide**: every variable of the domain, with its Core status, format, terminology and tips. Click one to read about it.
 - **Checklist**: what is still missing or empty in the table you are building. It refreshes after each run (F5).

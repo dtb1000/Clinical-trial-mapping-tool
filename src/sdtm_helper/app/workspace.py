@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from .. import SDTMIG_VERSION, progress
 from ..checks.engine import CheckReport, run_checks
 from ..guidance.engine import DomainGuide, build_guide
-from ..sas.session import SasConnection
+from ..sas.session import SasConnection, TableInfo
 from ..standards import terminology
 from ..standards.domain import DomainSpec, bundle_manifest, load_domain
 
@@ -37,6 +37,17 @@ def split_table(text: str) -> tuple[str, str]:
         lib, _, table = text.partition(".")
         return lib, table
     return "WORK", text
+
+
+@dataclass
+class Preview:
+    table: str
+    info: TableInfo
+    rows: "object"        # pandas DataFrame with the first rows
+
+    @property
+    def shown(self) -> int:
+        return len(self.rows)
 
 
 @dataclass
@@ -116,6 +127,30 @@ class Workspace:
         if table:
             self.save(table=table)
         return self.guide
+
+    def tables(self, extra_libs: tuple[str, ...] = ("WORK",)) -> list[str]:
+        """LIB.TABLE names to offer in the preview picker: WORK, the target library and any others given."""
+        if self.sas is None:
+            return []
+        libs = list(dict.fromkeys([split_table(self.state.target_table or "WORK.X")[0], *extra_libs]))
+        out = []
+        for lib in libs:
+            try:
+                out += [f"{lib}.{t}" for t in self.sas.list_tables(lib)]
+            except Exception:  # library not assigned yet
+                continue
+        return out
+
+    def preview(self, table: str, rows: int = 200) -> Preview | None:
+        """The first rows of any table, for the live preview next to the editor. None if it doesn't exist yet."""
+        if self.sas is None or not table.strip():
+            return None
+        lib, name = split_table(table)
+        try:
+            info = self.sas.describe(lib, name)
+        except LookupError:
+            return None
+        return Preview(f"{lib}.{name}", info, self.sas.fetch(lib, name, obs=rows))
 
     def run_checks(self, table: str | None = None, dm_table: str | None = None) -> CheckReport:
         if self.sas is None:

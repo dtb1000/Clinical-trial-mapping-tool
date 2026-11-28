@@ -53,3 +53,14 @@ def test_clean_table_ticks_the_check_step():
     ws = Workspace("LORNA", "DM", sas=sas)
     assert ws.run_checks("FINAL.DM").passed
     assert "check" in ws.done
+
+
+def test_preview_and_table_list():
+    dm = read("lorna_dm.csv", DM)
+    sas = SasConnection(session=FakeSASsession({"FINAL.DM": dm, "WORK.TEMP": dm.head(3)}))
+    ws = Workspace("LORNA", "DM", sas=sas)
+    ws.save(table="FINAL.DM")
+    assert set(ws.tables()) == {"FINAL.DM", "WORK.TEMP"}
+    p = ws.preview("final.dm", rows=50)
+    assert p.table == "FINAL.DM" and p.shown == 50 and p.info.nobs == 300
+    assert ws.preview("FINAL.AE") is None

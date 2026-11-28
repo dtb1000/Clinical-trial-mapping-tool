@@ -48,7 +48,9 @@ class FakeSASsession:
                  "length": 8 if pd.api.types.is_numeric_dtype(df[c]) else int(max(1, df[c].astype(str).str.len().max())),
                  "label": "", "format": "", "varnum": i + 1} for i, c in enumerate(df.columns)]
             return _Data(pd.DataFrame(rows, columns=["name", "type", "length", "label", "format", "varnum"]))
-        return _Data(self.tables[f"{libref}.{table}"])
+        df = self.tables[f"{libref}.{table}"]
+        obs = (dsopts or {}).get("obs")
+        return _Data(df.head(obs) if obs else df)
 
     def endsas(self):
         pass

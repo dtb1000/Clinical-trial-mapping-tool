@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QObject, QPointF, QRectF, QRunnable, Qt, QThreadPool, Signal
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, QObject, QPointF, QRectF, QRunnable, Qt, QThreadPool, QTimer, Signal
 from PySide6.QtGui import (QAction, QColor, QFont, QKeySequence, QPainter, QPen, QSyntaxHighlighter,
                            QTextCharFormat)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
@@ -20,7 +20,7 @@ from .. import __version__
 from ..checks.engine import ERROR, NOTICE, WARNING, CheckReport
 from ..guidance.engine import DomainGuide
 from ..settings import CONNECTIONS, ODA_REGIONS, AppSettings, load_settings, save_settings
-from .workspace import Workspace, available_domains
+from .workspace import Preview, Workspace, available_domains
 
 STATUS_COLOURS = {"done": "#2e7d32", "missing": "#c62828", "empty": "#c62828",
                   "partly empty": "#ef6c00", "optional": "#757575"}
@@ -100,6 +100,124 @@ def monospace() -> QFont:
     font.setStyleHint(QFont.Monospace)
     font.setPointSize(10)
     return font
+
+
+# -- table preview ------------------------------------------------------------
+
+class DataFrameModel(QAbstractTableModel):
+    """Shows the first rows of a SAS table. SDTM columns get their label and Core in the tooltip;
+    empty values in Required columns are shaded so they stand out."""
+
+    def __init__(self):
+        super().__init__()
+        self.df = None
+        self.spec = None
+        self.labels: dict[str, str] = {}
+
+    def set_data(self, df, spec, labels):
+        self.beginResetModel()
+        self.df, self.spec, self.labels = df, spec, labels
+        self.endResetModel()
+
+    def rowCount(self, parent=QModelIndex()):
+        return 0 if self.df is None else len(self.df)
+
+    def columnCount(self, parent=QModelIndex()):
+        return 0 if self.df is None else len(self.df.columns)
+
+    def _var(self, col):
+        return self.spec.variable(str(self.df.columns[col])) if self.spec else None
+
+    def data(self, index, role=Qt.DisplayRole):
+        if self.df is None or not index.isValid():
+            return None
+        value = self.df.iat[index.row(), index.column()]
+        empty = value is None or (isinstance(value, float) and value != value) or str(value).strip() in ("", "<NA>", "nan")
+        if role == Qt.DisplayRole:
+            if empty:
+                return ""
+            if isinstance(value, float) and value.is_integer():
+                return str(int(value))
+            return str(value)
+        if role == Qt.BackgroundRole and empty:
+            var = self._var(index.column())
+            if var is not None and var.core == "Req":
+                return QColor("#ffcdd2")
+        return None
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if self.df is None:
+            return None
+        if orientation == Qt.Vertical:
+            return str(section + 1) if role == Qt.DisplayRole else None
+        name = str(self.df.columns[section])
+        var = self._var(section)
+        if role == Qt.DisplayRole:
+            return name
+        if role == Qt.ToolTipRole:
+            label = self.labels.get(name.upper(), "")
+            if var is None:
+                return f"{name} {('– ' + label) if label else ''}\nNot a {self.spec.code} variable" if self.spec else name
+            return f"{name} – {var.label}\n{CORE_NAMES.get(var.core, var.core)}, {var.datatype}"
+        if role == Qt.ForegroundRole:
+            if var is None:
+                return QColor("#9e9e9e")
+            return QColor("#c62828") if var.core == "Req" else None
+        return None
+
+
+class TablePreview(QWidget):
+    """Pick any table and see its first rows next to the SAS code."""
+    table_changed = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(4, 4, 4, 4)
+        row = QHBoxLayout()
+        row.addWidget(QLabel("<b>Table</b>"))
+        self.picker = QComboBox()
+        self.picker.setEditable(True)
+        self.picker.setMinimumWidth(160)
+        self.picker.lineEdit().returnPressed.connect(lambda: self.table_changed.emit(self.picker.currentText()))
+        self.picker.activated.connect(lambda _i: self.table_changed.emit(self.picker.currentText()))
+        row.addWidget(self.picker, 1)
+        self.live = QCheckBox("Live")
+        self.live.setToolTip("Re-run your program in SAS about 2 seconds after you stop typing, then refresh this table.\n"
+                             "Off by default: every run rewrites the tables your program creates.")
+        row.addWidget(self.live)
+        lay.addLayout(row)
+        self.info = QLabel("Connect to SAS and run your program to see the table here.")
+        self.info.setWordWrap(True)
+        lay.addWidget(self.info)
+        from PySide6.QtWidgets import QTableView
+        self.view = QTableView()
+        self.model = DataFrameModel()
+        self.view.setModel(self.model)
+        self.view.setFont(monospace())
+        self.view.horizontalHeader().setDefaultSectionSize(110)
+        self.view.verticalHeader().setDefaultSectionSize(20)
+        lay.addWidget(self.view, 1)
+
+    def set_tables(self, tables: list[str], current: str):
+        self.picker.blockSignals(True)
+        self.picker.clear()
+        self.picker.addItems(tables)
+        self.picker.setCurrentText(current)
+        self.picker.blockSignals(False)
+
+    def show_preview(self, preview: Preview | None, spec, table: str):
+        if preview is None:
+            self.model.set_data(None, spec, {})
+            self.info.setText(f"{table or 'The table'} doesn't exist yet. Run your program to create it.")
+            return
+        labels = {c.name.upper(): c.label for c in preview.info.columns}
+        self.model.set_data(preview.rows, spec, labels)
+        shown = f"first {preview.shown} of " if preview.shown < preview.info.nobs else ""
+        self.info.setText(f"<b>{preview.table}</b>: showing {shown}{preview.info.nobs} rows, "
+                          f"{len(preview.info.columns)} variables. Red headers are Required; "
+                          "shaded cells are empty Required values; grey headers aren't in the domain.")
+        self.view.resizeColumnsToContents()
 
 
 # -- workflow chart -----------------------------------------------------------
@@ -262,7 +380,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f"SDTM Helper {__version__}")
-        self.resize(1400, 860)
+        self.resize(1600, 900)
         self.pool = QThreadPool.globalInstance()
         self.settings = load_settings()
         self.sas = None
@@ -317,20 +435,36 @@ class MainWindow(QMainWindow):
         action("Export .sas", self.export_file)
         action("Save", self.save, "Ctrl+S", "Save your program and progress  [Ctrl+S]")
         action("Settings", self.edit_settings)
+        bar.addSeparator()
+        self.guide_toggle = action("Hide guide", self.toggle_guide, "F9", "Show or hide the guide panel  [F9]")
 
     def _build_body(self):
         left = QSplitter(Qt.Vertical)
+        top = QSplitter(Qt.Horizontal)
         self.editor = QPlainTextEdit()
         self.editor.setFont(monospace())
         self.editor.setTabStopDistance(32)
+        self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.highlighter = SasHighlighter(self.editor.document())
         self.log = QPlainTextEdit()
         self.log.setReadOnly(True)
         self.log.setFont(monospace())
         self.log.setPlaceholderText("SAS log")
-        left.addWidget(self._titled("Your SAS program", self.editor))
+        self.preview = TablePreview()
+        self.preview.table_changed.connect(self.load_preview)
+        self.preview.live.toggled.connect(self._live_toggled)
+        self.live_timer = QTimer(self)
+        self.live_timer.setSingleShot(True)
+        self.live_timer.setInterval(2000)
+        self.live_timer.timeout.connect(self._live_run)
+        self.editor.textChanged.connect(self._editor_changed)
+        self.busy = False
+        top.addWidget(self._titled("Your SAS program", self.editor))
+        top.addWidget(self.preview)
+        top.setSizes([560, 520])
+        left.addWidget(top)
         left.addWidget(self._titled("Log", self.log))
-        left.setSizes([560, 260])
+        left.setSizes([600, 220])
 
         self.tabs = QTabWidget()
         # Guide tab
@@ -393,7 +527,7 @@ class MainWindow(QMainWindow):
         body = QSplitter(Qt.Horizontal)
         body.addWidget(left)
         body.addWidget(self.tabs)
-        body.setSizes([780, 620])
+        body.setSizes([1080, 480])
         self.setCentralWidget(body)
 
     @staticmethod
@@ -417,6 +551,9 @@ class MainWindow(QMainWindow):
         self.ws = Workspace(study, domain, sas=self.sas)
         self.editor.setPlainText(self.ws.program)
         self.table.setText(self.ws.state.target_table or f"FINAL.{domain}")
+        self.preview.picker.setCurrentText(self.table.text())
+        if self.sas is not None:
+            self.load_preview(self.table.text())
         self.settings.last_study, self.settings.last_domain = study, domain
         save_settings(self.settings)
         self.findings.clear()
@@ -497,6 +634,7 @@ class MainWindow(QMainWindow):
             on_done(result)
 
         def fail(err):
+            self.busy = False
             QApplication.restoreOverrideCursor()
             self.statusBar().showMessage("Failed.")
             QMessageBox.warning(self, "SDTM Helper", err)
@@ -532,6 +670,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(f"Connected to SAS {self.sas.version} ({CONNECTIONS[self.settings.connection]}).")
             self.connect_action.setText("Connected")
             self.refresh()
+            self.load_preview(self.table.text())
 
         self._background(work, done, "Connecting to SAS…")
 
@@ -543,11 +682,54 @@ class MainWindow(QMainWindow):
         self.ws.save(self.editor.toPlainText(), self.table.text())
 
         def done(log):
+            self.busy = False
             self.show_log(log)
-            self.statusBar().showMessage("Program finished. Refreshing the checklist…")
+            self.statusBar().showMessage("Program finished. Refreshing the table and checklist…")
             self.refresh()
+            self.load_preview()
 
+        self.busy = True
         self._background(self.ws.submit, done, "Running your program in SAS…", code)
+
+    # live table preview
+    def load_preview(self, table: str | None = None):
+        if self.sas is None or not self.ws:
+            return
+        table = (table or self.preview.picker.currentText() or self.table.text()).strip()
+
+        def work():
+            return self.ws.tables(("WORK",)), self.ws.preview(table)
+
+        def done(result):
+            tables, preview = result
+            if table.upper() not in tables and "." in table:
+                tables = [table.upper(), *tables]
+            self.preview.set_tables(tables, table.upper())
+            self.preview.show_preview(preview, self.ws.spec, table.upper())
+
+        self._background(work, done, f"Reading {table}…")
+
+    def _editor_changed(self):
+        if self.preview.live.isChecked() and self.sas is not None:
+            self.live_timer.start()
+
+    def _live_toggled(self, on: bool):
+        if on and self.sas is None:
+            QMessageBox.information(self, "SDTM Helper", "Connect to SAS first to use Live mode.")
+            self.preview.live.setChecked(False)
+        elif on:
+            self.statusBar().showMessage("Live mode on: your program re-runs about 2 seconds after you stop typing.")
+
+    def _live_run(self):
+        if self.busy:                 # a run is still going: try again shortly
+            self.live_timer.start()
+            return
+        self.run_program()
+
+    def toggle_guide(self):
+        visible = not self.tabs.isVisible()
+        self.tabs.setVisible(visible)
+        self.guide_toggle.setText("Hide guide" if visible else "Show guide")
 
     def show_log(self, log: str):
         self.log.clear()
