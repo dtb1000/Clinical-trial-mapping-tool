@@ -1113,7 +1113,10 @@ def main() -> int:
     app.setApplicationName("SDTM Helper")
     window = MainWindow()
     window.show()
-    return app.exec()
+    code = app.exec()
+    window.pool.waitForDone(5000)
+    del window                  # widgets go before the QApplication, so exit is clean
+    return code
 
 
 if __name__ == "__main__":

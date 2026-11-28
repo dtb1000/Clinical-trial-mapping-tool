@@ -22,6 +22,10 @@ def window(tmp_path, monkeypatch):
     w = MainWindow()
     yield w
     w.close()
+    w.pool.waitForDone(5000)
+    w.deleteLater()            # destroy the widgets before Python tears Qt down at exit
+    app.sendPostedEvents(None, 0)
+    app.processEvents()
 
 
 def test_window_opens_on_dm_and_switches_domain(window):
