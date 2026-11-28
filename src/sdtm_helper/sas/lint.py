@@ -131,7 +131,8 @@ def _missing_semicolon(program: str, s, kind: str) -> list[Problem]:
     for k, line in enumerate(lines[1:], 1):
         offset += len(lines[k - 1]) + 1
         word = re.match(r"\s*(%?\w+)\s*(=?)", line)
-        if not word or not seen_text:
+        inside = s.masked[:offset].count("(") > s.masked[:offset].count(")")
+        if not word or not seen_text or inside:     # still inside brackets, e.g. data set options
             seen_text = seen_text or bool(line.strip())
             continue
         w = word.group(1).lower()

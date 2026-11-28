@@ -49,6 +49,10 @@ The guide tabs:
 - **Workflow**: the order to work in, as a chart. Click a step to tick it off; blue is what to do next.
 - **Checks**: the P21-lite report (F6), each finding with a suggested fix.
 
+Everything is also in the menu bar: **File** (open, export and save programs, **Saved work** to pick up any study and domain where you left off, Settings), **SAS** (Connect, Run, Refresh checklist, Run checks, Follow my code), **View** (each tab, Ctrl+1 to Ctrl+5), **Standards** and **Help**.
+
+On first start the app downloads the SDTM controlled terminology from NCI EVS by itself (no account needed), and reminds you when it is more than 100 days old; **Standards > Download controlled terminology** refreshes it. It also tells you, at the bottom right, when a newer version of the app is out. The **Workflow** tab can copy the workflow as a Mermaid chart.
+
 Pick your study and domain at the top and type the table you are building (e.g. `FINAL.DM`). **Run** (F3) submits your program, or just the selected lines, to SAS. Your program and ticked steps are saved per study and domain (Ctrl+S, and automatically when you switch or close).
 
 ### Install on Windows

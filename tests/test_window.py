@@ -19,7 +19,7 @@ def window(tmp_path, monkeypatch):
     monkeypatch.setenv("SDTM_HELPER_HOME", str(tmp_path))
     from sdtm_helper.app.window import MainWindow
     app = QApplication.instance() or QApplication([])
-    w = MainWindow()
+    w = MainWindow(check_online=False)
     yield w
     w.close()
     w.pool.waitForDone(5000)
@@ -143,3 +143,58 @@ def test_function_lookup_and_f1(window):
     window.editor.setTextCursor(cursor)
     window.lookup_word()
     assert "CALL MISSING(" in window.func_text.toPlainText()
+
+
+def _settle(window, until=lambda: False):
+    """Let background work finish and its signals reach the window."""
+    import time
+    window.pool.waitForDone(5000)
+    end = time.time() + 3
+    while time.time() < end and not until():
+        QApplication.processEvents()
+        time.sleep(0.01)
+
+
+def test_menus_hold_every_feature(window):
+    menus = {m.title().replace("&", ""): [a.text() for a in m.actions() if a.text()]
+             for m in (a.menu() for a in window.menuBar().actions())}
+    assert {"File", "SAS", "View", "Standards", "Help"} <= set(menus)
+    assert "Saved work…" in menus["File"] and "Run ▶" in menus["SAS"] and "Follow my code" in menus["SAS"]
+    assert "Download controlled terminology" in menus["Standards"]
+    assert any("SAS function" in t for t in menus["Help"])
+    assert "SAS functions" in menus["View"] and "Problems" in menus["View"]
+    window.follow_action.setChecked(False)
+    assert not window.preview.follow.isChecked()
+
+
+def test_saved_work_reopens_a_domain(window):
+    from sdtm_helper.app.window import SavedWorkDialog
+    from sdtm_helper import progress
+    window.editor.setPlainText("/* my AE work */")
+    window.domain.setCurrentIndex(window.domain.findData("AE"))      # saves DM, opens AE
+    window.save()
+    dlg = SavedWorkDialog(progress.list_saved())
+    assert dlg.table.rowCount() >= 2
+    row = next(r for r in range(dlg.table.rowCount()) if dlg.table.item(r, 1).text() == "AE")
+    dlg._pick(row, 0)
+    assert dlg.choice == (window.ws.study, "AE")
+
+
+def test_terminology_download_and_update_reminder(window, monkeypatch):
+    from sdtm_helper import updates
+    from sdtm_helper.standards import terminology
+    monkeypatch.setattr(terminology, "download", lambda: terminology.cache_path())
+    monkeypatch.setattr(terminology, "load", lambda path=None: {"C66731": object()})
+    window.download_ct(quiet=True)
+    _settle(window, lambda: "Downloaded" in window.statusBar().currentMessage())
+    assert "Downloaded 1 SDTM codelists" in window.statusBar().currentMessage()
+    monkeypatch.setattr(updates, "check_for_update",
+                        lambda: "A newer version (v9.9.9) is available with updated standards: https://example.org/r")
+    window.check_updates(quiet=True)
+    _settle(window, lambda: bool(window.update_label.text()))
+    assert "newer version" in window.update_label.text()
+
+
+def test_copy_workflow_as_mermaid(window):
+    window.copy_mermaid()
+    assert QApplication.clipboard().text().startswith("flowchart TD")

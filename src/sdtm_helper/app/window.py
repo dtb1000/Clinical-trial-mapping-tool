@@ -46,6 +46,7 @@ class Task(QRunnable):
         super().__init__()
         self.fn, self.args, self.kwargs = fn, args, kwargs
         self.signals = _Signals()
+        self.setAutoDelete(False)      # the window keeps it until its signal has been handled
 
     def run(self):
         try:
@@ -595,10 +596,59 @@ class PasswordDialog(QDialog):
         form.addRow(buttons)
 
 
+def _local_time(stamp: str) -> str:
+    """'2026-11-28T14:30:00+00:00' -> the same moment on this computer's clock."""
+    from datetime import datetime
+    try:
+        return datetime.fromisoformat(stamp).astimezone().strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        return stamp
+
+
+class SavedWorkDialog(QDialog):
+    """Every study and domain with saved work, to pick one up again."""
+
+    def __init__(self, saved, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Saved work")
+        self.resize(720, 400)
+        self.choice: tuple[str, str] | None = None
+        lay = QVBoxLayout(self)
+        lay.addWidget(QLabel("Double-click a row to carry on where you left off."))
+        self.table = QTableWidget(len(saved), 5)
+        self.table.setHorizontalHeaderLabels(["Study", "Domain", "Steps done", "Table", "Last saved"])
+        self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.table.verticalHeader().setVisible(False)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        rows = sorted(saved, key=lambda p: p.updated_at, reverse=True)
+        for r, p in enumerate(rows):
+            for c, text in enumerate([p.study, p.domain, str(len(p.done_steps)), p.target_table,
+                                      _local_time(p.updated_at)]):
+                item = QTableWidgetItem(text)
+                item.setData(Qt.UserRole, (p.study, p.domain))
+                self.table.setItem(r, c, item)
+        self.table.cellDoubleClicked.connect(self._pick)
+        lay.addWidget(self.table)
+        buttons = QDialogButtonBox(QDialogButtonBox.Open | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(lambda: self._pick(self.table.currentRow(), 0))
+        buttons.rejected.connect(self.reject)
+        lay.addWidget(buttons)
+        if not rows:
+            lay.insertWidget(0, QLabel("No saved work yet."))
+
+    def _pick(self, row: int, _col: int):
+        item = self.table.item(row, 0)
+        if item is not None:
+            self.choice = item.data(Qt.UserRole)
+            self.accept()
+
+
 # -- main window ----------------------------------------------------------------
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, check_online: bool = True):
+        """check_online: download controlled terminology if missing and look for a newer release."""
         super().__init__()
         self.setWindowTitle(f"SDTM Helper {__version__}")
         self.resize(1600, 900)
@@ -613,6 +663,12 @@ class MainWindow(QMainWindow):
         idx = self.domain.findData(self.settings.last_domain or "DM")
         self.domain.setCurrentIndex(max(idx, 0))
         self.open_workspace()
+        self._build_menus()
+        self.update_label = QLabel()
+        self.update_label.setOpenExternalLinks(True)
+        self.statusBar().addPermanentWidget(self.update_label)
+        if check_online:
+            QTimer.singleShot(500, self.startup_checks)
 
     # layout
     def _build_toolbar(self):
@@ -648,14 +704,14 @@ class MainWindow(QMainWindow):
             return a
 
         self.connect_action = action("Connect", self.connect_sas, tip="Connect to SAS")
-        action("Run ▶", self.run_program, "F3", "Submit the program (or the selected lines) to SAS  [F3]")
-        action("Refresh checklist", self.refresh, "F5", "Compare your table with the domain  [F5]")
-        action("Run checks", self.run_checks, "F6", "P21-lite checks on your table  [F6]")
+        self.run_action = action("Run ▶", self.run_program, "F3", "Submit the program (or the selected lines) to SAS  [F3]")
+        self.refresh_action = action("Refresh checklist", self.refresh, "F5", "Compare your table with the domain  [F5]")
+        self.checks_action = action("Run checks", self.run_checks, "F6", "P21-lite checks on your table  [F6]")
         bar.addSeparator()
-        action("Open .sas", self.open_file, "Ctrl+O")
-        action("Export .sas", self.export_file)
-        action("Save", self.save, "Ctrl+S", "Save your program and progress  [Ctrl+S]")
-        action("Settings", self.edit_settings)
+        self.open_action = action("Open .sas", self.open_file, "Ctrl+O")
+        self.export_action = action("Export .sas", self.export_file)
+        self.save_action = action("Save", self.save, "Ctrl+S", "Save your program and progress  [Ctrl+S]")
+        self.settings_action = action("Settings", self.edit_settings)
         bar.addSeparator()
         self.guide_toggle = action("Hide guide", self.toggle_guide, "F9", "Show or hide the guide panel  [F9]")
         bar.addSeparator()
@@ -671,10 +727,10 @@ class MainWindow(QMainWindow):
         self.func_box.returnPressed.connect(lambda: self.show_function(self.func_box.text()))
         self.func_box.setToolTip("Type a SAS function and press Enter to see its syntax and open the SAS documentation")
         bar.addWidget(self.func_box)
-        help_action = QAction("Look up function", self)
-        help_action.setShortcut(QKeySequence("F1"))
-        help_action.triggered.connect(self.lookup_word)
-        self.addAction(help_action)
+        self.lookup_action = QAction("Look up the SAS function under the cursor", self)
+        self.lookup_action.setShortcut(QKeySequence("F1"))
+        self.lookup_action.triggered.connect(self.lookup_word)
+        self.addAction(self.lookup_action)
 
     def _build_body(self):
         left = QSplitter(Qt.Vertical)
@@ -768,6 +824,10 @@ class MainWindow(QMainWindow):
         f.addWidget(QLabel("Click a step to mark it done. Blue = do next, green = done."))
         f.addWidget(self.chart, 1)
         f.addWidget(self.next_step)
+        mermaid = QPushButton("Copy as a Mermaid chart")
+        mermaid.setToolTip("Copy the workflow, with your ticked steps, as a Mermaid flowchart for notes or GitHub")
+        mermaid.clicked.connect(self.copy_mermaid)
+        f.addWidget(mermaid)
         self.tabs.addTab(flow, "Workflow")
         # Checks tab
         checks = QWidget()
@@ -924,7 +984,7 @@ class MainWindow(QMainWindow):
 
         task.signals.done.connect(finish)
         task.signals.failed.connect(fail)
-        self.pool.start(task)
+        self._start(task)
 
     def connect_sas(self):
         if not self.settings.java_path and self.settings.connection == "oda":
@@ -1089,12 +1149,21 @@ class MainWindow(QMainWindow):
         sel.format.setBackground(QColor("#f2f7fd"))
         self.editor.setExtraSelections([sel])
 
+    def _start(self, task: "Task"):
+        """Keep a reference until the result arrives, so the signal isn't lost with the task."""
+        if not hasattr(self, "_running"):
+            self._running: set = set()
+        self._running.add(task)
+        task.signals.done.connect(lambda _r, t=task: self._running.discard(t))
+        task.signals.failed.connect(lambda _e, t=task: self._running.discard(t))
+        self.pool.start(task)
+
     def _quiet(self, fn, on_done, on_fail=None):
         """Background work with no busy cursor or pop-ups, for things that happen while you type."""
         task = Task(fn)
         task.signals.done.connect(on_done)
         task.signals.failed.connect(on_fail or (lambda _e: None))
-        self.pool.start(task)
+        self._start(task)
 
     # -- problems: squiggly underlines ------------------------------------------
     def check_code(self):
@@ -1242,6 +1311,166 @@ class MainWindow(QMainWindow):
             word = "CALL " + word
         if word:
             self.show_function(word)
+
+    # -- menus: everything in one place -------------------------------------------
+    def _build_menus(self):
+        bar = self.menuBar()
+
+        def add(menu, text, slot, shortcut=None):
+            a = QAction(text, self)
+            a.triggered.connect(slot)
+            if shortcut:
+                a.setShortcut(QKeySequence(shortcut))
+            menu.addAction(a)
+            return a
+
+        file = bar.addMenu("&File")
+        for a in (self.open_action, self.export_action, self.save_action):
+            file.addAction(a)
+        add(file, "Saved work…", self.show_saved_work, "Ctrl+Shift+O")
+        file.addSeparator()
+        file.addAction(self.settings_action)
+        file.addSeparator()
+        add(file, "Quit", self.close, "Ctrl+Q")
+
+        sas = bar.addMenu("&SAS")
+        for a in (self.connect_action, self.run_action, self.refresh_action, self.checks_action):
+            sas.addAction(a)
+        self.follow_action = QAction("Follow my code", self, checkable=True)
+        self.follow_action.setChecked(self.preview.follow.isChecked())
+        self.follow_action.toggled.connect(self.preview.follow.setChecked)
+        self.preview.follow.toggled.connect(self.follow_action.setChecked)
+        sas.addAction(self.follow_action)
+
+        view = bar.addMenu("&View")
+        view.addAction(self.guide_toggle)
+        view.addSeparator()
+        for i in range(self.tabs.count()):
+            add(view, self.tabs.tabText(i), lambda _c=False, i=i: self._show_tab(i), f"Ctrl+{i + 1}")
+        add(view, "Problems", lambda: self.bottom.setCurrentIndex(1), "Ctrl+Shift+P")
+        add(view, "Log", lambda: self.bottom.setCurrentIndex(0), "Ctrl+Shift+L")
+
+        std = bar.addMenu("S&tandards")
+        add(std, "Download controlled terminology", lambda: self.download_ct(quiet=False))
+        add(std, "Check for a newer version", lambda: self.check_updates(quiet=False))
+        add(std, "About the standards", self.about_standards)
+
+        helpm = bar.addMenu("&Help")
+        helpm.addAction(self.lookup_action)
+        add(helpm, "Setting up SAS OnDemand (guide)", lambda: self._open_url(
+            "https://github.com/dtb1000/Clinical-trial-mapping-tool/blob/main/docs/saspy-setup-windows.md"))
+        add(helpm, "User guide (README)", lambda: self._open_url(
+            "https://github.com/dtb1000/Clinical-trial-mapping-tool#readme"))
+        add(helpm, "Releases", lambda: self._open_url(
+            "https://github.com/dtb1000/Clinical-trial-mapping-tool/releases"))
+        add(helpm, "About SDTM Helper", self.about)
+
+    def _show_tab(self, index: int):
+        if not self.tabs.isVisible():
+            self.toggle_guide()
+        self.tabs.setCurrentIndex(index)
+
+    @staticmethod
+    def _open_url(url: str):
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        QDesktopServices.openUrl(QUrl(url))
+
+    def copy_mermaid(self):
+        QApplication.clipboard().setText(self.ws.guide.mermaid(self.ws.done))
+        self.statusBar().showMessage("Workflow copied as a Mermaid flowchart.")
+
+    # saved work
+    def show_saved_work(self):
+        from .. import progress
+        dlg = SavedWorkDialog(progress.list_saved(), self)
+        if dlg.exec() == QDialog.Accepted and dlg.choice:
+            study, domain = dlg.choice
+            self.study.setText(study)
+            idx = self.domain.findData(domain)
+            if idx >= 0:
+                self.domain.blockSignals(True)
+                self.domain.setCurrentIndex(idx)
+                self.domain.blockSignals(False)
+            self.open_workspace()
+
+    # standards and updates
+    def startup_checks(self):
+        from ..standards import terminology
+        path = terminology.cache_path()
+        if not path.exists():
+            self.download_ct(quiet=True)
+        else:
+            import time
+            days = int((time.time() - path.stat().st_mtime) // 86400)
+            if days > 100:
+                self.statusBar().showMessage(
+                    f"Your controlled terminology is {days} days old. NCI publishes a new release each quarter: "
+                    "Standards > Download controlled terminology.")
+        self.check_updates(quiet=True)
+
+    def download_ct(self, quiet: bool = False):
+        from ..standards import terminology
+
+        def work():
+            path = terminology.download()
+            return len(terminology.load(path))
+
+        def done(count):
+            self.statusBar().showMessage(f"Downloaded {count} SDTM codelists from NCI EVS. "
+                                         "The checks now include controlled terminology.")
+
+        def failed(err):
+            text = ("Couldn't download the controlled terminology from NCI EVS (no internet?). "
+                    "The checks run without it. Try again with Standards > Download controlled terminology.")
+            if quiet:
+                self.statusBar().showMessage(text)
+            else:
+                QMessageBox.warning(self, "SDTM Helper", f"{text}\n\n{err}")
+
+        self.statusBar().showMessage("Downloading SDTM controlled terminology from NCI EVS…")
+        self._quiet(work, done, failed)
+
+    def check_updates(self, quiet: bool = True):
+        from .. import updates
+
+        def done(message):
+            if message:
+                url = message.rsplit(" ", 1)[-1]
+                self.update_label.setText(f'<a href="{html.escape(url)}">A newer version is available</a>')
+                self.update_label.setToolTip(message)
+                if not quiet:
+                    QMessageBox.information(self, "SDTM Helper", message)
+            elif not quiet:
+                QMessageBox.information(self, "SDTM Helper", f"You have the latest version ({__version__}).")
+
+        self._quiet(updates.check_for_update, done)
+
+    def about_standards(self):
+        from .. import SDTM_VERSION, SDTMIG_VERSION
+        from ..standards import terminology
+        path = terminology.cache_path()
+        if path.exists():
+            import datetime
+            when = datetime.date.fromtimestamp(path.stat().st_mtime).isoformat()
+            try:
+                ct = f"{len(terminology.load(path))} codelists, downloaded {when}"
+            except Exception:
+                ct = f"downloaded {when}, but the file couldn't be read: download it again"
+        else:
+            ct = "not downloaded yet (Standards > Download controlled terminology)"
+        domains = self.domain.count()
+        QMessageBox.information(self, "Standards", (
+            f"SDTMIG {SDTMIG_VERSION} and SDTM {SDTM_VERSION}: {domains} domains, built into the app.\n"
+            f"Controlled terminology (NCI EVS): {ct}.\n\n"
+            "New app releases bring updated standards; the app tells you when one is out."))
+
+    def about(self):
+        QMessageBox.about(self, "About SDTM Helper", (
+            f"<b>SDTM Helper {__version__}</b><p>A guide for SAS programmers mapping clinical trial data to "
+            "CDISC SDTM. It never writes your mapping code: you write every line, and the app explains, "
+            "checks and keeps track.</p><p>Open source: "
+            '<a href="https://github.com/dtb1000/Clinical-trial-mapping-tool">github.com/dtb1000/Clinical-trial-mapping-tool</a></p>'))
 
     def toggle_guide(self):
         visible = not self.tabs.isVisible()

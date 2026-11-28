@@ -70,6 +70,9 @@ def test_unclosed_quote_comment_and_last_step():
 
 def test_set_options_and_macro_calls_are_fine():
     assert lint.check("data x;\n  set y\n    end=eof nobs=n;\nrun;") == []
+    assert lint.check("data x;\n  set y(where=(a = 1)\n         rename=(b=c));\nrun;") == []
+    broken = lint.check("data x;\n  set y(where=(a = 1)\n         rename=(b=c))\n  d = 1;\nrun;")
+    assert [(p.line, p.message[:18]) for p in broken] == [(2, "Missing semicolon?")]
     assert lint.check("data ts;\n  %rec(A, 1)\n  %rec(B, 2)\nrun;") == []
 
 
