@@ -152,6 +152,13 @@ class Workspace:
             return None
         return Preview(f"{lib}.{name}", info, self.sas.fetch(lib, name, obs=rows))
 
+    def follow(self, program: str, pos: int, rows: int = 200):
+        """Run a sandboxed copy of the step under the cursor and mark what it does to its tables."""
+        if self.sas is None:
+            raise RuntimeError("Not connected to SAS.")
+        from .follow import follow
+        return follow(self.sas, program, pos, rows)
+
     def run_checks(self, table: str | None = None, dm_table: str | None = None) -> CheckReport:
         if self.sas is None:
             raise RuntimeError("Not connected to SAS.")

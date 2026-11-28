@@ -18,11 +18,20 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 
 ## The desktop app
 
-![SDTM Helper window](docs/images/app-live-preview.png)
+![SDTM Helper following a DATA step](docs/images/app-follow.png)
 
-The window has your SAS program with a **live table preview** beside it, the SAS log underneath, and the guide on the right (F9 hides it for more room).
+The window has your SAS program with the **tables** beside it, the SAS log underneath, and the guide on the right (F9 hides it for more room).
 
-- **Table preview**: the first 200 rows of the table you are building, or any other table (pick WORK or intermediate tables from the list). It refreshes after every run. Red headers are Required variables, shaded cells are empty Required values, grey headers aren't in the domain; hover a header for its label and Core. Tick **Live** to re-run your program automatically about 2 seconds after you stop typing.
+- **Follow my code** (on by default) works like SQLens: put the cursor in a DATA step or a `CREATE TABLE … AS SELECT` and, a moment after you stop typing, the tables that step reads and makes appear beside it. You don't need to run anything.
+  - Blue columns reach the output, grey ones are dropped, and purple columns on the right are the new ones you are building, already filled in with the values they will get.
+  - Struck-through rows (marked ✕) are the ones your `WHERE` or subsetting `IF` removes.
+  - Small words under each heading say how the step uses the column: keep, drop, where, used, by, join, → new name. Hover a heading for the SDTMIG label and Core, and for a new column, your expression.
+  - A line above the table sums it up, for example "WHERE/IF keeps 60 of 200 rows. 6 new columns."
+  - To do this, the app runs a copy of your step on the first 100 to 1000 rows (**Show**) of each input, writing only to `WORK._SDTMH_*` tables. Your own tables are never changed. Steps that write files, run commands, use `MODIFY`, `SELECT INTO :` or `UNION` are not followed; run those with F3.
+- **Details** lists each variable of the table: what it holds in plain words, length, label and format, and what SDTMIG expects (Core, text or number, the right label).
+- **Any table** shows the first rows of any table, for example your finished `FINAL.DM` after a run. Red headers are Required variables, shaded cells are empty Required values, grey headers aren't in the domain.
+
+![The Details view of the table a step makes](docs/images/app-follow-details.png)
 
 The guide tabs:
 

@@ -63,8 +63,35 @@ def test_table_preview_shows_rows_and_marks_columns(window):
     assert "doesn't exist yet" in window.preview.info.text()
 
 
-def test_live_mode_needs_a_connection(window, monkeypatch):
-    from PySide6.QtWidgets import QMessageBox
-    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: None)
-    window.preview.live.setChecked(True)
-    assert not window.preview.live.isChecked()
+def test_follow_needs_a_connection(window):
+    assert window.preview.follow.isChecked()
+    window.follow_now()
+    assert "Connect to SAS" in window.preview.info.text()
+
+
+def test_follow_marks_the_step_under_the_cursor(window):
+    import pandas as pd
+    from PySide6.QtCore import Qt
+    from test_program import PROGRAM
+    raw = pd.DataFrame({"SUBJID": ["001", "002"], "GENDER": ["Male", "Female"], "AGE": [30.0, 12.0],
+                        "COUNTRY": ["PL", "PL"]})
+    out = pd.DataFrame({"STUDYID": ["LORNA"], "USUBJID": ["LORNA-001"], "SEX": ["M"], "COUNTRY": ["PL"],
+                        "_sdtmh_r1": [1.0]})
+    fake = FakeSASsession({"RAW.DM": raw, "WORK._SDTMH_IN1": raw.assign(_sdtmh_r1=[1.0, 2.0]),
+                           "WORK._SDTMH_OUT1": out})
+    window.sas = window.ws.sas = SasConnection(session=fake)
+    result = window.ws.follow(PROGRAM, PROGRAM.index("studyid ="))
+    window.preview.show_follow(result, window.ws.spec)
+    window._mark_step(result)
+    assert window.preview.list.count() == 2
+    model = window.preview.model
+    assert model.headerData(1, Qt.Vertical) == "✕ 2"                       # AGE 12 removed by WHERE
+    assert model.data(model.index(1, 0), Qt.FontRole).strikeOut()
+    cols = list(model.df.columns)
+    assert "new" in model.headerData(cols.index("USUBJID"), Qt.Horizontal)
+    assert "catx" in model.headerData(cols.index("USUBJID"), Qt.Horizontal, Qt.ToolTipRole)
+    assert "drop" in model.headerData(cols.index("AGE"), Qt.Horizontal)
+    assert "keeps 1 of 2 rows" in window.preview.info.text()
+    window.preview.list.setCurrentRow(1)
+    assert list(model.df.columns) == ["STUDYID", "USUBJID", "SEX", "COUNTRY"]
+    assert window.editor.extraSelections()

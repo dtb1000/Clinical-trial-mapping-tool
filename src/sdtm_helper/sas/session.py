@@ -2,13 +2,25 @@
 
 The app only reads from SAS here: it lists libraries and tables and describes
 a table's variables so it can compare them against SDTMIG. The user's own SAS
-code is submitted unchanged; the app never generates mapping code.
+code is submitted unchanged (Follow my code runs a copy of one step with only its table
+names pointed at WORK, see sas/program.py); the app never generates mapping code.
 """
 
 from __future__ import annotations
 
+import functools
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
+
+
+def _locked(method):
+    """One SAS call at a time: the window follows your code in the background while you run it."""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        with self._lock:
+            return method(self, *args, **kwargs)
+    return wrapper
 
 
 @dataclass
@@ -37,6 +49,7 @@ class SasConnection:
 
     def __init__(self, cfgname: str = "oda", cfgfile: str | None = None, session=None, **login):
         """login may hold omruser/omrpw for ODA, so the app can ask for the password instead of a file."""
+        self._lock = threading.RLock()
         if session is not None:          # used by tests
             self._sas = session
             return
@@ -51,10 +64,12 @@ class SasConnection:
         self._sas = saspy.SASsession(cfgname=cfgname, cfgfile=cfgfile, **login)
 
     # -- running the user's own code ---------------------------------------
+    @_locked
     def submit(self, code: str) -> str:
         """Submit the user's own SAS code unchanged and return the log."""
         return self._sas.submit(code).get("LOG", "")
 
+    @_locked
     def run_file(self, path: str | Path) -> str:
         """Submit a SAS program the user wrote (for example their libname file). Returns the log."""
         code = Path(path).read_text(encoding="utf-8")
@@ -66,10 +81,12 @@ class SasConnection:
     def version(self) -> str:
         return str(getattr(self._sas, "sasver", "unknown"))
 
+    @_locked
     def list_libraries(self) -> list[str]:
         df = self._sas.sasdata("vlibnam", "sashelp").to_df()
         return sorted({str(v).strip().upper() for v in df["libname"]})
 
+    @_locked
     def list_tables(self, libref: str) -> list[str]:
         libref = _safe_name(libref)
         df = self._sas.sasdata(
@@ -77,6 +94,7 @@ class SasConnection:
         ).to_df()
         return sorted(str(v).strip().upper() for v in df["memname"])
 
+    @_locked
     def describe(self, libref: str, table: str) -> TableInfo:
         libref, table = _safe_name(libref), _safe_name(table)
         where = f"libname='{libref}' and memname='{table}'"
@@ -97,12 +115,14 @@ class SasConnection:
         ]
         return TableInfo(libref=libref, name=table, nobs=nobs, columns=columns)
 
+    @_locked
     def fetch(self, libref: str, table: str, obs: int | None = None):
         """Read a table (or its first `obs` rows) into a pandas DataFrame (read-only)."""
         libref, table = _safe_name(libref), _safe_name(table)
         dsopts = {"obs": int(obs)} if obs else None
         return self._sas.sasdata(table, libref, dsopts=dsopts).to_df()
 
+    @_locked
     def missing_counts(self, libref: str, table: str, variables: list[str]) -> dict[str, int]:
         """Count empty values per variable, so the checklist can say what still needs filling.
 
@@ -123,6 +143,7 @@ class SasConnection:
         row = df.iloc[0]
         return {n: int(row[n] or 0) for n in names}
 
+    @_locked
     def close(self) -> None:
         self._sas.endsas()
 

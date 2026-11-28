@@ -20,6 +20,8 @@ from .. import __version__
 from ..checks.engine import ERROR, NOTICE, WARNING, CheckReport
 from ..guidance.engine import DomainGuide
 from ..settings import CONNECTIONS, ODA_REGIONS, AppSettings, load_settings, save_settings
+from ..sas.session import ColumnInfo, TableInfo
+from .follow import FollowedTable, FollowResult
 from .workspace import Preview, Workspace, available_domains
 
 STATUS_COLOURS = {"done": "#2e7d32", "missing": "#c62828", "empty": "#c62828",
@@ -104,19 +106,33 @@ def monospace() -> QFont:
 
 # -- table preview ------------------------------------------------------------
 
+MARK = {"keep": "#dbe8f6", "rename": "#dbe8f6", "new": "#f1e4f5", "removed": "#f8dcd0"}
+MARK_TEXT = {"keep": "#1565c0", "rename": "#1565c0", "new": "#7b1fa2", "drop": "#9e9e9e", "removed": "#a23a12"}
+DATE_FORMATS = ("DATE", "YYMMDD", "E8601", "IS8601", "DATETIME", "DDMMYY", "MMDDYY", "TIME")
+
+
+def _empty(value) -> bool:
+    return value is None or (isinstance(value, float) and value != value) or str(value).strip() in ("", "<NA>", "nan", "NaT")
+
+
 class DataFrameModel(QAbstractTableModel):
     """Shows the first rows of a SAS table. SDTM columns get their label and Core in the tooltip;
-    empty values in Required columns are shaded so they stand out."""
+    empty values in Required columns are shaded so they stand out.
+
+    When it shows a table the step under the cursor reads (a FollowedTable), it also marks what
+    the step does, like SQLens: blue columns reach the output, grey ones are dropped, purple ones
+    are new and already filled in, and struck-through rows are removed by WHERE or IF."""
 
     def __init__(self):
         super().__init__()
         self.df = None
         self.spec = None
         self.labels: dict[str, str] = {}
+        self.followed: FollowedTable | None = None
 
-    def set_data(self, df, spec, labels):
+    def set_data(self, df, spec, labels, followed: FollowedTable | None = None):
         self.beginResetModel()
-        self.df, self.spec, self.labels = df, spec, labels
+        self.df, self.spec, self.labels, self.followed = df, spec, labels, followed
         self.endResetModel()
 
     def rowCount(self, parent=QModelIndex()):
@@ -128,76 +144,182 @@ class DataFrameModel(QAbstractTableModel):
     def _var(self, col):
         return self.spec.variable(str(self.df.columns[col])) if self.spec else None
 
+    def _status(self, col) -> str:
+        return self.followed.status.get(str(self.df.columns[col]).upper(), "") if self.followed else ""
+
+    def _removed(self, row) -> bool:
+        f = self.followed
+        return f is not None and f.kept_rows is not None and row not in f.kept_rows
+
     def data(self, index, role=Qt.DisplayRole):
         if self.df is None or not index.isValid():
             return None
         value = self.df.iat[index.row(), index.column()]
-        empty = value is None or (isinstance(value, float) and value != value) or str(value).strip() in ("", "<NA>", "nan")
+        empty = _empty(value)
+        removed, status = self._removed(index.row()), self._status(index.column())
         if role == Qt.DisplayRole:
             if empty:
                 return ""
             if isinstance(value, float) and value.is_integer():
                 return str(int(value))
             return str(value)
-        if role == Qt.BackgroundRole and empty:
-            var = self._var(index.column())
-            if var is not None and var.core == "Req":
-                return QColor("#ffcdd2")
+        if role == Qt.BackgroundRole:
+            if removed:
+                return QColor(MARK["removed"])
+            if empty and (self.followed is None or self.followed.role == "output"):
+                var = self._var(index.column())
+                if var is not None and var.core == "Req":
+                    return QColor("#ffcdd2")
+            if status in MARK:
+                return QColor(MARK[status])
+        if role == Qt.ForegroundRole:
+            if removed:
+                return QColor(MARK_TEXT["removed"])
+            if status == "drop":
+                return QColor(MARK_TEXT["drop"])
+        if role == Qt.FontRole and removed:
+            font = monospace()
+            font.setStrikeOut(True)
+            return font
         return None
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if self.df is None:
             return None
         if orientation == Qt.Vertical:
-            return str(section + 1) if role == Qt.DisplayRole else None
+            if role == Qt.DisplayRole:
+                return f"✕ {section + 1}" if self._removed(section) else str(section + 1)
+            if role == Qt.ForegroundRole and self._removed(section):
+                return QColor(MARK_TEXT["removed"])
+            if role == Qt.ToolTipRole and self.followed and self.followed.kept_rows is not None:
+                return "Removed by your WHERE or IF" if self._removed(section) else "Reaches the output"
+            return None
         name = str(self.df.columns[section])
         var = self._var(section)
+        words = self.followed.words.get(name.upper(), []) if self.followed else []
+        status = self._status(section)
         if role == Qt.DisplayRole:
-            return name
+            return name + ("\n" + " · ".join(words) if words else "")
         if role == Qt.ToolTipRole:
             label = self.labels.get(name.upper(), "")
             if var is None:
-                return f"{name} {('– ' + label) if label else ''}\nNot a {self.spec.code} variable" if self.spec else name
-            return f"{name} – {var.label}\n{CORE_NAMES.get(var.core, var.core)}, {var.datatype}"
+                text = f"{name} {('– ' + label) if label else ''}\nNot a {self.spec.code} variable" if self.spec else name
+            else:
+                text = f"{name} – {var.label}\n{CORE_NAMES.get(var.core, var.core)}, {var.datatype}"
+            formula = self.followed.formulas.get(name.upper()) if self.followed else None
+            return (text + ("\nYour step: " + ", ".join(words) if words else "")
+                    + (f"\n{name} = {formula}" if formula else ""))
         if role == Qt.ForegroundRole:
-            if var is None:
-                return QColor("#9e9e9e")
-            return QColor("#c62828") if var.core == "Req" else None
+            if status in MARK_TEXT:
+                return QColor(MARK_TEXT[status])
+            if self.followed is None or self.followed.role == "output":
+                if var is None:
+                    return QColor("#9e9e9e")
+                return QColor("#c62828") if var.core == "Req" else None
+        if role == Qt.BackgroundRole and status in MARK:
+            return QColor(MARK[status])
         return None
 
 
+def holds(col: ColumnInfo) -> str:
+    """A column's type in plain words, as SQLens's Details view does."""
+    if col.type.lower().startswith("char"):
+        return f"text, up to {col.length} character{'s' if col.length != 1 else ''}"
+    fmt = (col.format or "").upper()
+    if fmt.startswith(DATE_FORMATS):
+        return f"a SAS date or time (a number shown with {col.format}); SDTM needs ISO 8601 text"
+    return "number"
+
+
+def sdtm_note(col: ColumnInfo, spec) -> str:
+    var = spec.variable(col.name) if spec else None
+    if var is None:
+        return f"Not a {spec.code} variable" if spec else ""
+    notes = [CORE_NAMES.get(var.core, var.core)]
+    wants_text = var.datatype.lower().startswith("char")
+    if wants_text and not col.type.lower().startswith("char"):
+        notes.append("should be text")
+    if not wants_text and col.type.lower().startswith("char"):
+        notes.append("should be a number")
+    if col.label and col.label.strip().lower() != var.label.lower():
+        notes.append(f"label should be '{var.label}'")
+    elif not col.label:
+        notes.append(f"no label yet ('{var.label}')")
+    return "; ".join(notes)
+
+
 class TablePreview(QWidget):
-    """Pick any table and see its first rows next to the SAS code."""
+    """The tables beside the SAS code. With Follow my code ticked it shows the tables the step
+    under the cursor reads and makes, marked the way SQLens marks a query; otherwise any table."""
     table_changed = Signal(str)
+
+    LEGEND = (f'<span style="background:{MARK["keep"]};color:{MARK_TEXT["keep"]}">&nbsp;SEX&nbsp;</span> reaches the output'
+              f' &nbsp; <span style="color:{MARK_TEXT["drop"]}">&nbsp;AGE&nbsp;</span> dropped'
+              f' &nbsp; <span style="background:{MARK["new"]};color:{MARK_TEXT["new"]}">&nbsp;USUBJID&nbsp;</span> new column you are building'
+              f' &nbsp; <span style="background:{MARK["removed"]};color:{MARK_TEXT["removed"]}"><s>&nbsp;002&nbsp;</s></span> row removed by WHERE or IF')
 
     def __init__(self):
         super().__init__()
+        self.followed: list[FollowedTable] = []
+        self.spec = None
         lay = QVBoxLayout(self)
         lay.setContentsMargins(4, 4, 4, 4)
         row = QHBoxLayout()
-        row.addWidget(QLabel("<b>Table</b>"))
+        row.addWidget(QLabel("<b>Tables</b>"))
+        self.follow = QCheckBox("Follow my code")
+        self.follow.setChecked(True)
+        self.follow.setToolTip("Show the tables the step under your cursor reads and makes, a moment after you stop typing.\n"
+                               "A copy of your step runs on the first rows in WORK; your own tables are never changed.")
+        row.addWidget(self.follow)
+        row.addStretch(1)
+        row.addWidget(QLabel("Show"))
+        self.rows = QComboBox()
+        for n in (100, 200, 500, 1000):
+            self.rows.addItem(f"{n} rows", n)
+        self.rows.setCurrentIndex(1)
+        row.addWidget(self.rows)
+        row.addWidget(QLabel(" Any table"))
         self.picker = QComboBox()
         self.picker.setEditable(True)
-        self.picker.setMinimumWidth(160)
+        self.picker.setMinimumWidth(150)
         self.picker.lineEdit().returnPressed.connect(lambda: self.table_changed.emit(self.picker.currentText()))
         self.picker.activated.connect(lambda _i: self.table_changed.emit(self.picker.currentText()))
         row.addWidget(self.picker, 1)
-        self.live = QCheckBox("Live")
-        self.live.setToolTip("Re-run your program in SAS about 2 seconds after you stop typing, then refresh this table.\n"
-                             "Off by default: every run rewrites the tables your program creates.")
-        row.addWidget(self.live)
         lay.addLayout(row)
-        self.info = QLabel("Connect to SAS and run your program to see the table here.")
+        self.title = QLabel()
+        self.title.setWordWrap(True)
+        lay.addWidget(self.title)
+        self.info = QLabel("Connect to SAS to see your tables here.")
         self.info.setWordWrap(True)
         lay.addWidget(self.info)
+
         from PySide6.QtWidgets import QTableView
+        split = QSplitter(Qt.Horizontal)
+        self.list = QListWidget()
+        self.list.setMinimumWidth(150)
+        self.list.setMaximumWidth(170)
+        self.list.currentRowChanged.connect(self._show_followed)
+        split.addWidget(self.list)
+        self.tabs = QTabWidget()
         self.view = QTableView()
         self.model = DataFrameModel()
         self.view.setModel(self.model)
         self.view.setFont(monospace())
         self.view.horizontalHeader().setDefaultSectionSize(110)
         self.view.verticalHeader().setDefaultSectionSize(20)
-        lay.addWidget(self.view, 1)
+        self.tabs.addTab(self.view, "Rows")
+        self.details = QTableWidget(0, 6)
+        self.details.setHorizontalHeaderLabels(["Variable", "What it holds", "Length", "Label", "Format", "SDTMIG"])
+        self.details.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+        self.details.verticalHeader().setVisible(False)
+        self.details.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.tabs.addTab(self.details, "Details")
+        split.addWidget(self.tabs)
+        split.setSizes([160, 640])
+        lay.addWidget(split, 1)
+        self.legend = QLabel(self.LEGEND)
+        self.legend.setWordWrap(True)
+        lay.addWidget(self.legend)
 
     def set_tables(self, tables: list[str], current: str):
         self.picker.blockSignals(True)
@@ -206,18 +328,90 @@ class TablePreview(QWidget):
         self.picker.setCurrentText(current)
         self.picker.blockSignals(False)
 
+    # one table, not following
     def show_preview(self, preview: Preview | None, spec, table: str):
+        self.spec = spec
+        self.followed = []
+        self.list.clear()
+        self.list.hide()
+        self.legend.hide()
+        self.title.setText(f"<b>{html.escape(table or '')}</b>")
         if preview is None:
             self.model.set_data(None, spec, {})
+            self.details.setRowCount(0)
             self.info.setText(f"{table or 'The table'} doesn't exist yet. Run your program to create it.")
             return
         labels = {c.name.upper(): c.label for c in preview.info.columns}
         self.model.set_data(preview.rows, spec, labels)
+        self._fill_details(preview.info)
         shown = f"first {preview.shown} of " if preview.shown < preview.info.nobs else ""
-        self.info.setText(f"<b>{preview.table}</b>: showing {shown}{preview.info.nobs} rows, "
+        self.info.setText(f"Showing {shown}{preview.info.nobs} rows, "
                           f"{len(preview.info.columns)} variables. Red headers are Required; "
                           "shaded cells are empty Required values; grey headers aren't in the domain.")
         self.view.resizeColumnsToContents()
+
+    # following the step under the cursor
+    def show_message(self, text: str, error: bool = False):
+        colour = "#a23a12" if error else "#616161"
+        self.info.setText(f'<span style="color:{colour}">{html.escape(text)}</span>')
+
+    def show_follow(self, result: FollowResult, spec):
+        self.spec = spec
+        self.title.setText(f"<b>{html.escape(result.title)}</b>" if result.title else "")
+        if result.message:              # keep the last good tables on screen, as SQLens does
+            self.show_message(result.message, result.error)
+            return
+        keep = self.list.currentItem().data(Qt.UserRole) if self.list.currentItem() else None
+        self.followed = result.tables
+        self.list.blockSignals(True)
+        self.list.clear()
+        for t in result.tables:
+            note = "read by this step" if t.role == "input" else "made by this step (preview)"
+            item = QListWidgetItem(f"{t.name}\n  {note}")
+            item.setData(Qt.UserRole, (t.role, t.name))
+            if t.role == "output":
+                item.setForeground(QColor(MARK_TEXT["new"]))
+            self.list.addItem(item)
+        self.list.blockSignals(False)
+        self.list.show()
+        self.legend.show()
+        index = next((i for i, t in enumerate(result.tables) if (t.role, t.name) == keep), 0)
+        self.list.setCurrentRow(index)
+        self._show_followed(index)
+
+    def _show_followed(self, index: int):
+        if not (0 <= index < len(self.followed)):
+            return
+        t = self.followed[index]
+        labels = {c.name.upper(): c.label for c in t.info.columns} if t.info else {}
+        self.model.set_data(t.rows, self.spec, labels, t)
+        colours = {"removed": MARK_TEXT["removed"], "kept": "#2e7d32", "keep": MARK_TEXT["keep"], "new": MARK_TEXT["new"]}
+        parts = []
+        for text, mark in t.summary:
+            if mark in colours:
+                parts.append(f'<span style="text-decoration:underline;text-decoration-color:{colours[mark]};'
+                             f'color:{colours[mark]}">{html.escape(text)}</span>')
+            else:
+                parts.append(html.escape(text))
+        self.info.setText("".join(parts))
+        if t.info:
+            self._fill_details(t.info)
+        self.view.resizeColumnsToContents()
+        for c in range(self.model.columnCount()):       # long notes are in the tooltip
+            self.view.setColumnWidth(c, min(self.view.columnWidth(c), 140))
+
+    def _fill_details(self, info: TableInfo):
+        self.details.setRowCount(len(info.columns))
+        for r, col in enumerate(info.columns):
+            name = col.name if not col.name.lower().startswith("_sdtmh_") else ""
+            cells = [col.name, holds(col), str(col.length), col.label, col.format, sdtm_note(col, self.spec)]
+            for c, text in enumerate(cells):
+                item = QTableWidgetItem(text)
+                if c == 5 and ("should" in text or text.startswith("Not a")):
+                    item.setForeground(QColor("#ef6c00"))
+                self.details.setItem(r, c, item)
+            self.details.setRowHidden(r, not name)
+        self.details.resizeColumnsToContents()
 
 
 # -- workflow chart -----------------------------------------------------------
@@ -451,17 +645,22 @@ class MainWindow(QMainWindow):
         self.log.setFont(monospace())
         self.log.setPlaceholderText("SAS log")
         self.preview = TablePreview()
-        self.preview.table_changed.connect(self.load_preview)
-        self.preview.live.toggled.connect(self._live_toggled)
-        self.live_timer = QTimer(self)
-        self.live_timer.setSingleShot(True)
-        self.live_timer.setInterval(2000)
-        self.live_timer.timeout.connect(self._live_run)
+        self.preview.table_changed.connect(self._pick_table)
+        self.preview.follow.toggled.connect(self._follow_toggled)
+        self.preview.rows.currentIndexChanged.connect(lambda _i: self.follow_now())
+        self.follow_timer = QTimer(self)
+        self.follow_timer.setSingleShot(True)
+        self.follow_timer.setInterval(1200)
+        self.follow_timer.timeout.connect(self.follow_now)
         self.editor.textChanged.connect(self._editor_changed)
+        self.editor.cursorPositionChanged.connect(self._cursor_moved)
         self.busy = False
+        self.following = False      # a follow run is in progress
+        self.follow_again = False
+        self.followed_step = (-1, -1)
         top.addWidget(self._titled("Your SAS program", self.editor))
         top.addWidget(self.preview)
-        top.setSizes([560, 520])
+        top.setSizes([520, 680])
         left.addWidget(top)
         left.addWidget(self._titled("Log", self.log))
         left.setSizes([600, 220])
@@ -553,7 +752,9 @@ class MainWindow(QMainWindow):
         self.table.setText(self.ws.state.target_table or f"FINAL.{domain}")
         self.preview.picker.setCurrentText(self.table.text())
         if self.sas is not None:
-            self.load_preview(self.table.text())
+            self.update_tables()
+        else:
+            self.follow_now()
         self.settings.last_study, self.settings.last_domain = study, domain
         save_settings(self.settings)
         self.findings.clear()
@@ -670,7 +871,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(f"Connected to SAS {self.sas.version} ({CONNECTIONS[self.settings.connection]}).")
             self.connect_action.setText("Connected")
             self.refresh()
-            self.load_preview(self.table.text())
+            self.update_tables()
 
         self._background(work, done, "Connecting to SAS…")
 
@@ -686,7 +887,7 @@ class MainWindow(QMainWindow):
             self.show_log(log)
             self.statusBar().showMessage("Program finished. Refreshing the table and checklist…")
             self.refresh()
-            self.load_preview()
+            self.update_tables()
 
         self.busy = True
         self._background(self.ws.submit, done, "Running your program in SAS…", code)
@@ -709,22 +910,103 @@ class MainWindow(QMainWindow):
 
         self._background(work, done, f"Reading {table}…")
 
-    def _editor_changed(self):
-        if self.preview.live.isChecked() and self.sas is not None:
-            self.live_timer.start()
+    def update_tables(self):
+        """After connecting or running: follow the code, or reload the table being shown."""
+        if self.preview.follow.isChecked():
+            self.follow_now()
+            self._list_tables()
+        else:
+            self.load_preview()
 
-    def _live_toggled(self, on: bool):
-        if on and self.sas is None:
-            QMessageBox.information(self, "SDTM Helper", "Connect to SAS first to use Live mode.")
-            self.preview.live.setChecked(False)
-        elif on:
-            self.statusBar().showMessage("Live mode on: your program re-runs about 2 seconds after you stop typing.")
-
-    def _live_run(self):
-        if self.busy:                 # a run is still going: try again shortly
-            self.live_timer.start()
+    def _list_tables(self):
+        if self.sas is None or not self.ws:
             return
-        self.run_program()
+        current = self.preview.picker.currentText() or self.table.text()
+        self._quiet(lambda: self.ws.tables(("WORK",)), lambda tables: self.preview.set_tables(tables, current))
+
+    def _pick_table(self, table: str):
+        self.preview.follow.blockSignals(True)
+        self.preview.follow.setChecked(False)
+        self.preview.follow.blockSignals(False)
+        self._mark_step(None)
+        self.load_preview(table)
+
+    def _follow_toggled(self, on: bool):
+        if on:
+            self.follow_now()
+        else:
+            self._mark_step(None)
+            self.load_preview()
+
+    def _editor_changed(self):
+        if self.preview.follow.isChecked() and self.sas is not None:
+            self.follow_timer.start()
+
+    def _cursor_moved(self):
+        """Moving into another step follows that step straight away (typing waits for a pause)."""
+        if not self.preview.follow.isChecked() or self.sas is None or self.follow_timer.isActive():
+            return
+        from ..sas.program import step_at
+        step = step_at(self.editor.toPlainText(), self.editor.textCursor().position())
+        if step is not None and (step.start, step.end) != self.followed_step:
+            self.follow_timer.start(300)
+
+    def follow_now(self):
+        if not self.ws or not self.preview.follow.isChecked():
+            return
+        if self.sas is None:
+            self.preview.show_message("Connect to SAS to follow your code: the tables your step reads and makes "
+                                      "will show here as you type.")
+            return
+        if self.following or self.busy:
+            self.follow_again = True
+            return
+        self.follow_timer.setInterval(1200)
+        program, pos = self.editor.toPlainText(), self.editor.textCursor().position()
+        rows = self.preview.rows.currentData() or 200
+        self.following = True
+        self.preview.show_message("Following your step…")
+
+        def done(result):
+            self.following = False
+            self.preview.show_follow(result, self.ws.spec)
+            self._mark_step(result if not result.message or result.error else None)
+            if self.follow_again:
+                self.follow_again = False
+                self.follow_now()
+
+        def failed(err):
+            self.following = False
+            self.preview.show_message(f"Couldn't follow this step: {err.splitlines()[-1] if err else ''}", True)
+
+        self._quiet(lambda: self.ws.follow(program, pos, rows), done, failed)
+
+    def _mark_step(self, result):
+        """Shade the step being followed in the editor."""
+        from PySide6.QtGui import QTextCursor
+        from PySide6.QtWidgets import QTextEdit
+        if result is None or result.step_start < 0:
+            self.followed_step = (-1, -1)
+            self.editor.setExtraSelections([])
+            return
+        self.followed_step = (result.step_start, result.step_end)
+        sel = QTextEdit.ExtraSelection()
+        cursor = QTextCursor(self.editor.document())
+        text = self.editor.toPlainText()
+        start = result.step_start + (len(text[result.step_start:result.step_end])
+                                     - len(text[result.step_start:result.step_end].lstrip()))
+        cursor.setPosition(min(start, len(text)))
+        cursor.setPosition(min(result.step_end, len(text)), QTextCursor.KeepAnchor)
+        sel.cursor = cursor
+        sel.format.setBackground(QColor("#f2f7fd"))
+        self.editor.setExtraSelections([sel])
+
+    def _quiet(self, fn, on_done, on_fail=None):
+        """Background work with no busy cursor or pop-ups, for things that happen while you type."""
+        task = Task(fn)
+        task.signals.done.connect(on_done)
+        task.signals.failed.connect(on_fail or (lambda _e: None))
+        self.pool.start(task)
 
     def toggle_guide(self):
         visible = not self.tabs.isVisible()
