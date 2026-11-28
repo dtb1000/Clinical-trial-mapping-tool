@@ -14,7 +14,63 @@ Targets: **SDTMIG v3.4** and **SDTM v2.0**, with SAS 9.4 through SAS OnDemand fo
 | 2. Domain guidance (DM first) | You choose the domain; the app explains each variable (for example ISO 8601 dates, how RFSTDTC is derived), shows a checklist of what is missing and a workflow chart, and saves your progress | Done |
 | 3. P21-lite checks | Small, fixable conformance checks at the end of each domain | Done |
 | 4a. Guidance for all domains | Shared workflows and tips for Events, Interventions and Findings domains, plus specific tips for AE, MH, DS, CM, EX, VS and LB | Done |
-| 4b. Windows app | Desktop window, installer for Windows, SAS 9.4 Desktop | Planned |
+| 4b. Windows app | Desktop window with SAS editor and guide panel, Windows installer, SAS 9.4 on your PC | Done |
+
+## The desktop app
+
+![SDTM Helper following a DATA step](docs/images/app-follow.png)
+
+The window has your SAS program with the **tables** beside it, the SAS log underneath, and the guide on the right (F9 hides it for more room).
+
+- **Follow my code** (on by default) works like SQLens: put the cursor in a DATA step or a `CREATE TABLE … AS SELECT` and, a moment after you stop typing, the tables that step reads and makes appear beside it. You don't need to run anything.
+  - Blue columns reach the output, grey ones are dropped, and purple columns on the right are the new ones you are building, already filled in with the values they will get.
+  - Struck-through rows (marked ✕) are the ones your `WHERE` or subsetting `IF` removes.
+  - Small words under each heading say how the step uses the column: keep, drop, where, used, by, join, → new name. Hover a heading for the SDTMIG label and Core, and for a new column, your expression.
+  - A line above the table sums it up, for example "WHERE/IF keeps 60 of 200 rows. 6 new columns."
+  - To do this, the app runs a copy of your step on the first 100 to 1000 rows (**Show**) of each input, writing only to `WORK._SDTMH_*` tables. Your own tables are never changed. Steps that write files, run commands, use `MODIFY`, `SELECT INTO :` or `UNION` are not followed; run those with F3.
+- **Details** lists each variable of the table: what it holds in plain words, length, label and format, and what SDTMIG expects (Core, text or number, the right label).
+- **Any table** shows the first rows of any table, for example your finished `FINAL.DM` after a run. Red headers are Required variables, shaded cells are empty Required values, grey headers aren't in the domain.
+
+![The Details view of the table a step makes](docs/images/app-follow-details.png)
+
+### Problems as you type, and SAS function lookup
+
+![Squiggly underlines, the Problems list and the SAS functions tab](docs/images/app-problems.png)
+
+- **Squiggly underlines**, like PyCharm: red for errors, amber for warnings. Hover over one to read the message. The **Problems** tab under the editor lists them all; double-click one to jump to it.
+  - A **quick check** runs as you type, without SAS: a missing semicolon, an unclosed quote, comment or bracket, a DO or SELECT without END, `==` or `!=` (SAS uses `=`/`EQ` and `^=`/`NE`), a misspelt function ("catz isn't a SAS function. Did you mean CATS, CATT or CATX?"), and a last step without RUN or QUIT.
+  - **SAS's own errors and warnings** are underlined too, at the column SAS marks in the log, after each Run (F3) and each time Follow my code runs your step. "Variable … is uninitialized" notes show as warnings, since they usually mean a misspelt or dropped variable. They clear when you change that line.
+- **SAS functions**: type a function in the **SAS function** box in the toolbar, or press **F1** on a function in your program (CALL routines and % macro functions too). The **SAS functions** tab shows its syntax, a short summary and, for the common ones, how it is used in SDTM mapping, with a link to SAS's documentation. You can also search by topic, e.g. "date". SAS's documentation site has no links by function name, so the link opens a web search for the function's SAS Help Center page, which comes up as the first result.
+
+The guide tabs:
+
+- **Guide**: every variable of the domain, with its Core status, format, terminology and tips. Click one to read about it.
+- **Checklist**: what is still missing or empty in the table you are building. It refreshes after each run (F5).
+- **Workflow**: the order to work in, as a chart. Click a step to tick it off; blue is what to do next.
+- **Checks**: the P21-lite report (F6), each finding with a suggested fix.
+
+Everything is also in the menu bar: **File** (open, export and save programs, **Saved work** to pick up any study and domain where you left off, Settings), **SAS** (Connect, Run, Refresh checklist, Run checks, Follow my code), **View** (each tab, Ctrl+1 to Ctrl+5), **Standards** and **Help**.
+
+On first start the app downloads the SDTM controlled terminology from NCI EVS by itself (no account needed), and reminds you when it is more than 100 days old; **Standards > Download controlled terminology** refreshes it. It also tells you, at the bottom right, when a newer version of the app is out. The **Workflow** tab can copy the workflow as a Mermaid chart.
+
+Pick your study and domain at the top and type the table you are building (e.g. `FINAL.DM`). **Run** (F3) submits your program, or just the selected lines, to SAS. Your program and ticked steps are saved per study and domain (Ctrl+S, and automatically when you switch or close).
+
+### Install on Windows
+
+1. Install Java (for example Eclipse Temurin from <https://adoptium.net/>).
+2. Download `SDTM-Helper-Setup-<version>.exe` from the [Releases](https://github.com/dtb1000/Clinical-trial-mapping-tool/releases) page and run it.
+3. Open SDTM Helper, click **Settings**, choose *SAS OnDemand for Academics* (with your home region and user ID) or *SAS 9.4 installed on this PC*, and check the Java path. Optionally pick your libname program to run after connecting.
+4. Click **Connect**. For ODA the app asks for your password each time and never stores it.
+
+To run it from source instead: `pip install -e .[app]`, then `sdtm-helper-app` (or `python -m sdtm_helper.app`).
+
+### Making a release
+
+Push a tag such as `v0.2.0`. GitHub Actions runs the tests on Windows, builds the app with PyInstaller, wraps it in an Inno Setup installer and attaches it to a new release. Every pull request also builds the installer as a downloadable artifact.
+
+## Command line
+
+The same features are available as commands, which is handy for scripting.
 
 ## Getting started
 

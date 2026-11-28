@@ -167,6 +167,7 @@ def check_structure(spec: DomainSpec, info: TableInfo | None, df: pd.DataFrame) 
             out.append(Finding("NAME-LENGTH", ERROR, f"Variable name {name} is longer than 8 characters.", name.upper()))
 
     if info is not None:
+        unlabelled: list[str] = []
         for col in info.columns:
             var = spec.variable(col.name)
             if col.label and len(col.label) > 40:
@@ -183,8 +184,12 @@ def check_structure(spec: DomainSpec, info: TableInfo | None, df: pd.DataFrame) 
             if col.label and var.label and col.label.strip().lower() != var.label.strip().lower():
                 out.append(Finding("LABEL", WARNING, f"{var.name} label is \"{col.label}\"; SDTMIG uses \"{var.label}\".", var.name))
             elif not col.label:
-                out.append(Finding("LABEL", WARNING, f"{var.name} has no label; SDTMIG uses \"{var.label}\".", var.name))
+                unlabelled.append(var.name)
 
+        if unlabelled:
+            out.append(Finding("LABEL", WARNING, f"{len(unlabelled)} variable(s) have no label: {', '.join(unlabelled)}.",
+                               count=len(unlabelled),
+                               fix="Add the SDTMIG labels, e.g. with a LABEL statement or ATTRIB in the final DATA step."))
         order = [c.name.upper() for c in info.columns if spec.variable(c.name)]
         expected = [v.name for v in spec.variables if v.name in order]
         if order != expected:

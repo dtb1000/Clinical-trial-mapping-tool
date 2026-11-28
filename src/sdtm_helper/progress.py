@@ -25,6 +25,7 @@ class DomainProgress:
     target_table: str = ""                                    # e.g. "FINAL.DM"
     done_steps: list[str] = field(default_factory=list)       # workflow steps ticked off
     notes: dict[str, str] = field(default_factory=dict)       # per-variable notes
+    program: str = ""                                         # the user's SAS program for this domain
     updated_at: str = ""
 
     def mark_done(self, step: str) -> None:
@@ -49,9 +50,14 @@ def load(study: str, domain: str) -> DomainProgress | None:
     path = _file(study, domain)
     if not path.exists():
         return None
-    return DomainProgress(**json.loads(path.read_text(encoding="utf-8")))
+    return _from_json(json.loads(path.read_text(encoding="utf-8")))
+
+
+def _from_json(data: dict) -> DomainProgress:
+    known = DomainProgress.__dataclass_fields__
+    return DomainProgress(**{k: v for k, v in data.items() if k in known})
 
 
 def list_saved() -> list[DomainProgress]:
-    return [DomainProgress(**json.loads(p.read_text(encoding="utf-8")))
+    return [_from_json(json.loads(p.read_text(encoding="utf-8")))
             for p in sorted(progress_dir().glob("*.json"))]

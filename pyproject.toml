@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sdtm-helper"
-version = "0.1.0"
+version = "0.2.0"
 description = "A guide for SAS clinical programmers mapping trial data to CDISC SDTM. It explains and checks; it never writes the mapping code."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,10 +15,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+app = ["PySide6>=6.6"]
+dev = ["pytest>=8", "PySide6>=6.6"]
 
 [project.scripts]
 sdtm-helper = "sdtm_helper.cli:main"
+
+[project.gui-scripts]
+sdtm-helper-app = "sdtm_helper.app.window:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -27,4 +31,4 @@ where = ["src"]
 sdtm_helper = ["data/**/*.json", "guidance/*.json"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "tests"]

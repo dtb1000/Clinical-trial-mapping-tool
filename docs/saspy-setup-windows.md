@@ -1,5 +1,7 @@
 # Connecting SDTM Helper to SAS OnDemand for Academics (Windows)
 
+> Using the desktop app? Its **Settings** dialog writes this configuration for you and asks for your password when you connect, so you can skip steps 5 and 6.
+
 SDTM Helper talks to SAS through **SASPy**, a free library from SAS Institute. You do this setup once. It takes about 15 minutes.
 
 You will need:
